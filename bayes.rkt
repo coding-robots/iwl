@@ -94,12 +94,12 @@
   (foldl + 0 lst))
 
 (define (readability-score msg)
-  (let* ([words (get-words msg)]
-         [total-words (length words)]
-         [total-sentences (length (get-sentences msg))]
-         [total-syllables (sum (map syllables-count words))])
-    (- (- 206.876 (* 1.015 (/ total-words total-sentences)))
-       (* 84.6 (/ total-syllables total-words)))))
+  (let* ([wl (get-words msg)]
+         [words (length wl)]
+         [sentences (length (get-sentences msg))]
+         [syllables (sum (map syllables-count wl))])
+    (- (- 206.876 (* 1.015 (/ words sentences)))
+       (* 84.6 (/ syllables words)))))
 
 
 ; Data stuctures
