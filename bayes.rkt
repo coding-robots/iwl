@@ -6,7 +6,7 @@
          racket/serialize)
 
 (define words-re
-  (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)"))
+  (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)")) ; p{L} matches Unicode word
 
 (define sentences-re
   (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
