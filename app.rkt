@@ -11,7 +11,7 @@
 
 ; hash with crc32 mappings of author names
 (define authors-hash
-  (for/hash ([author categories])
+  (for/hash ([author categories*])
     (values (string-crc32-hex author) author)))
 
 ;(require web-server/dispatch)
