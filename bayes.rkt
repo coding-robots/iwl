@@ -162,12 +162,12 @@
     ; Generate list of probabilities per category for each token in msg
     (for-each
      (lambda (w)
-       (let* ([tk (hash-ref tokens w (make-hash))]
-              [all-count (hash-sum tk)])
+       (let* ([token-counts (hash-ref tokens w (make-hash))]
+              [all-count (hash-sum token-counts)])
          (hash-for-each
           totals
           (lambda (cat cat-total)
-            (let* ([cnt (hash-ref tk cat 0)]
+            (let* ([cnt (hash-ref token-counts cat 0)]
                    [this-prob (/ cnt cat-total)]
                    [other-prob (/ (- all-count cnt)
                                   (- all-totals cat-total))]
