@@ -2,14 +2,13 @@
 
 (require "bayes.rkt")
 
-; Make a frame by instantiating the frame% class
 (define frame (new frame% [label "I Write Like"]
                    [spacing 4]
                    [border 10]
                    [min-width 400]
                    [min-height 400]))
 
-(define loading-msg (new message% 
+(define loading-msg (new message%
                      [parent frame]
                      [label "Loading data..."]))
 
@@ -25,7 +24,7 @@
      [label "Analyze"]
      (callback (lambda (button event)
                    (send result-field set-value (get-category (send text-field get-value)))
-                   (or (member result-field (send frame get-children)) 
+                   (or (member result-field (send frame get-children))
                        (send frame add-child result-field)))))
 
 (define result-field (new text-field% [parent frame]
