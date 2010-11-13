@@ -5,7 +5,8 @@
          racket/serialize)
 
 (define words-re
-  (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)")) ; p{L} matches Unicode word
+  (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)")) 
+           ; p{L} matches Unicode word
 
 (define sentences-re
   (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
@@ -15,8 +16,9 @@
 
 (define (get-words s)
   (map (lambda (x) 
+       ; note: regexp-match works like x100 faster with bytes
          (string-trim-both (bytes->string/utf-8 x) #\_)) 
-       (regexp-match* words-re (string->bytes/utf-8 s)))) ; regexp-match works like x100 faster with bytes
+       (regexp-match* words-re (string->bytes/utf-8 s)))) 
 
 (define (get-sentences s)
   (map bytes->string/utf-8 
@@ -131,7 +133,8 @@
 (define (hash-sum hash)
   (sum (hash-values hash)))
 
-(define (list-top-bottom num lst) ; return list with only num top and num bottom elements of list
+(define (list-top-bottom num lst) 
+  ; return list with only num top and num bottom elements of list
   (if (> (length lst) (* 2 num))
       (let ([slst (sort lst <)])
         (append (take slst num) (take-right slst num)))
