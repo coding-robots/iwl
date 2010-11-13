@@ -185,7 +185,7 @@
          cat
          (fold-ratings (append
                         (list-top-bottom 10 (hash-ref ratings cat))
-                        (make-list 3 ; how much readability influences the result
+                        (make-list 3 ; how much influence readability adds
                                    (readability-prob
                                     max-readability
                                     cur-readability
