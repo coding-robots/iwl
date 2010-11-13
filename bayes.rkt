@@ -171,8 +171,7 @@
                    [rating (if (> all-count 0)
                                (limit-fr (/ this-prob (+ this-prob other-prob)))
                                0.4)])
-              (hash-set! ratings cat
-                         (cons rating (hash-ref! ratings cat empty))))))))
+              (hash-update! ratings cat (lambda (x) (cons rating x)) empty))))))
      (get-tokens msg))
     ; Calculate single "rating" value from list of probabilities (including
     ; readabilities) for each category for which we generated probabilities
