@@ -148,8 +148,8 @@
 
 (define (fold-ratings probs)
   (let* ([fr (/ 1 (length probs))]
-         [P (- 1.0 (expt (reduce * 1.0 (map (lambda (p) (- 1.0 p)) probs)) fr))]
-         [Q (- 1.0 (expt (reduce * 1.0 probs) fr))]
+         [P (- 1 (expt (reduce * 1 (map (lambda (p) (- 1 p)) probs)) fr))]
+         [Q (- 1 (expt (reduce * 1 probs) fr))]
          [S (/ (- P Q) (+ P Q))])
     (/ (+ 1 S) 2)))
 
