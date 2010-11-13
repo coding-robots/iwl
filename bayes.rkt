@@ -2,7 +2,6 @@
 
 (require srfi/1
          srfi/13
-         racket/vector
          racket/serialize)
 
 (define words-re
@@ -215,11 +214,6 @@
   (collect-garbage))
 
 ; File trainer
-
-(define (file->string file)
-  (call-with-input-file file
-    (lambda (in)
-      (read-string (file-size file) in))))
 
 (define (train-on-file! file category)
   (train! (file->string file) category))
