@@ -1,6 +1,5 @@
 #lang racket
 
 (require "bayes.rkt")
-(require "authors.rkt")
-(train-on-authors! authors)
+(train-on-authors! (file->value "authors.rkt"))
 (dump-data)
