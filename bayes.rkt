@@ -143,7 +143,7 @@
         (append (take slst num) (take-right slst num)))
       lst))
 
-(define (limit-fr x)
+(define (lim-frac x)
   (max (min x 0.99) 0.01))
 
 (define (fold-ratings probs)
@@ -154,7 +154,7 @@
     (/ (+ 1 S) 2)))
 
 (define (readability-prob max cat current)
-  (limit-fr (/ (- max (abs (- current cat))) max)))
+  (lim-frac (/ (- max (abs (- current cat))) max)))
 
 (define (get-ratings msg)
   (let ([ratings    (make-hash)]
@@ -172,7 +172,7 @@
                    [other-prob (/ (- all-count cnt)
                                   (- all-totals cat-total))]
                    [rating (if (> all-count 0)
-                               (limit-fr (/ this-prob (+ this-prob other-prob)))
+                               (lim-frac (/ this-prob (+ this-prob other-prob)))
                                0.4)])
               (hash-update! ratings cat (lambda (x) (cons rating x)) empty))))))
      (get-tokens msg))
