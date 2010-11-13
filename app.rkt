@@ -11,11 +11,8 @@
 
 ; hash with crc32 mappings of author names
 (define authors-hash
-  (let ([h (make-hash)])
-    (vector-for-each (lambda (idx author)
-                       (hash-set! h (string-crc32-hex author) author))
-                     categories)
-    h))
+  (for/hash ([author categories])
+    (values (string-crc32-hex author) author)))
 
 ;(require web-server/dispatch)
 (define interface-version 'stateless)
