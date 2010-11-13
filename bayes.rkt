@@ -109,7 +109,7 @@
 (define readabilities (make-hash))
 
 (define (hash-inc! hash key)
-  (hash-set! hash key (+ 1 (hash-ref! hash key 0))))
+  (hash-update! hash key add1 0))
 
 (define (train! msg cat)
   ; Tokens
@@ -131,7 +131,6 @@
 (define (hash-sum hash)
   (sum (hash-values hash)))
 
-
 (define (list-top-bottom num lst) ; return list with only num top and num bottom elements of list
   (if (> (length lst) (* 2 num))
       (let ([slst (sort lst <)])
@@ -141,41 +140,49 @@
 (define (limit-fr x)
   (max (min x 0.99) 0.01))
 
+(define (fold-ratings probs)
+  (let* ([fr (/ 1 (length probs))]
+         [P (- 1.0 (expt (reduce * 1.0 (map (lambda (p) (- 1.0 p)) probs)) fr))]
+         [Q (- 1.0 (expt (reduce * 1.0 probs) fr))]
+         [S (/ (- P Q) (+ P Q))])
+    (/ (+ 1 S) 2)))
+
+(define (readability-prob max cat current)
+  (limit-fr (/ (- max (abs (- current cat))) max)))
+
 (define (get-ratings msg)
-  (let ([all-totals (hash-sum totals)]
-        [ratings    (make-hash)])
-    (for-each 
+  (let ([ratings    (make-hash)]
+        [all-totals (hash-sum totals)])
+    ; Generate list of probabilities per category for each token in msg
+    (for-each
      (lambda (w)
        (let* ([tk (hash-ref tokens w (make-hash))]
               [all-count (hash-sum tk)])
-         (hash-for-each totals
-                        (lambda (cat cat-total)
-                          (let* ([cnt (hash-ref tk cat 0)]
-                                 [this-prob (/ cnt cat-total)]
-                                 [other-prob (/ (- all-count cnt) 
-                                                (- all-totals cat-total))]
-                                 [rating (if (> all-count 0)
-                                             (limit-fr (/ this-prob (+ this-prob other-prob)))
-                                             0.4)])
-                            (hash-set! ratings cat
-                                       (cons rating (hash-ref! ratings cat empty))))))))
+         (hash-for-each
+          totals
+          (lambda (cat cat-total)
+            (let* ([cnt (hash-ref tk cat 0)]
+                   [this-prob (/ cnt cat-total)]
+                   [other-prob (/ (- all-count cnt)
+                                  (- all-totals cat-total))]
+                   [rating (if (> all-count 0)
+                               (limit-fr (/ this-prob (+ this-prob other-prob)))
+                               0.4)])
+              (hash-set! ratings cat
+                         (cons rating (hash-ref! ratings cat empty))))))))
      (get-tokens msg))
-    (let ([max-read (reduce max 0 (hash-values readabilities))]
-          [cur-read (readability-score msg)])
-      (for-each 
-       (lambda (cat)
-         (let* ([read-prob (limit-fr (/ (- max-read 
-                                           (abs (- cur-read (hash-ref readabilities cat 0)))) 
-                                        max-read))]
-                [probs (append (list-top-bottom 10 (hash-ref ratings cat)) 
-                               (make-list 3 read-prob))]
-                [fr (/ 1 (length probs))]
-                [P (- 1.0 (expt (reduce * 1.0 (map (lambda (p) (- 1.0 p)) probs)) fr))]
-                [Q (- 1.0 (expt (reduce * 1.0 probs) fr))]
-                [S (/ (- P Q) (+ P Q))])
-           (hash-set! ratings cat (/ (+ 1 S) 2))))
-       (hash-keys ratings)))
-    ratings))
+    ; Calculate single "rating" value from list of probabilities (including
+    ; readabilities) for each category for which we generated probabilities
+    (for/hash ([cat (hash-keys ratings)])
+      (values
+       cat
+       (fold-ratings (append
+                      (list-top-bottom 10 (hash-ref ratings cat))
+                      (make-list 3 ; how much readability influences the result
+                                 (readability-prob
+                                  (reduce max 0 (hash-values readabilities))
+                                  (readability-score msg)
+                                  (hash-ref readabilities cat 0)))))))))
 
 (define (get-category msg)
   (vector-ref categories (car (argmax cdr (hash->list (get-ratings msg))))))
