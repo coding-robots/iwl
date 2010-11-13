@@ -5,8 +5,8 @@
          racket/serialize)
 
 (define words-re
+  ; p{L} matches Unicode word
   (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)")) 
-; p{L} matches Unicode word
 
 (define sentences-re
   (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
@@ -95,6 +95,7 @@
   (foldl + 0 lst))
 
 (define (readability-score msg)
+  ; Flesch Reading Ease
   (let* ([wl (get-words msg)]
          [words (length wl)]
          [sentences (length (get-sentences msg))]
@@ -114,17 +115,19 @@
 (define (hash-inc! hash key)
   (hash-update! hash key add1 0))
 
+(define-syntax-rule (vector-expand! vec val)
+  ; Expands vector with value val and returns its index
+  (begin
+    (set! vec (vector-append vec (vector val)))
+    (sub1 (vector-length vec))))
+
 (define (train! msg cat)
   ; Tokens
   (for-each (lambda (w) 
               (let ([idx (or (vector-member cat categories)
-                             (begin
-                               (set! categories 
-                                     (vector-append categories (vector cat)))
-                               (- (vector-length categories) 1)))])
+                             (vector-expand! categories cat))])
                 (hash-inc! totals idx)
-                (let ([tok-hash (hash-ref! tokens w (make-hash))])
-                  (hash-inc! tok-hash idx))))
+                (hash-inc! (hash-ref! tokens w (make-hash)) idx)))
             (get-tokens msg))
   ; Readabilities
   (let ([cur-rdb (readability-score msg)])
@@ -175,16 +178,18 @@
      (get-tokens msg))
     ; Calculate single "rating" value from list of probabilities (including
     ; readabilities) for each category for which we generated probabilities
-    (for/hash ([cat (hash-keys ratings)])
-      (values
-       cat
-       (fold-ratings (append
-                      (list-top-bottom 10 (hash-ref ratings cat))
-                      (make-list 3 ; how much readability influences the result
-                                 (readability-prob
-                                  (reduce max 0 (hash-values readabilities))
-                                  (readability-score msg)
-                                  (hash-ref readabilities cat 0)))))))))
+    (let ([cur-readability (readability-score msg)]
+          [max-readability (reduce max 0 (hash-values readabilities))])
+      (for/hash ([cat (hash-keys ratings)])
+        (values
+         cat
+         (fold-ratings (append
+                        (list-top-bottom 10 (hash-ref ratings cat))
+                        (make-list 3 ; how much readability influences the result
+                                   (readability-prob
+                                    max-readability
+                                    cur-readability
+                                    (hash-ref readabilities cat 0))))))))))
 
 (define (get-category msg)
   (vector-ref categories (car (argmax cdr (hash->list (get-ratings msg))))))
