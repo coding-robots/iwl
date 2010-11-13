@@ -192,10 +192,7 @@
 
 (define (dump-data)
   (define (dump-var var file)
-    (call-with-output-file (data-path file)
-      (lambda (out)
-        (write (serialize var) out))
-       #:exists 'replace))
+    (write-to-file (serialize var) (data-path file) #:exists 'replace))
   (dump-var categories    categories-file)
   (dump-var totals        totals-file)
   (dump-var tokens        tokens-file)
@@ -203,9 +200,7 @@
 
 (define (load-data!)
   (define (load-var file)
-    (call-with-input-file (data-path file)
-      (lambda (in)
-        (deserialize (read in)))))
+    (deserialize (file->value (data-path file))))
   (set! categories    (load-var categories-file))
   (set! totals        (load-var totals-file))
   (set! tokens        (load-var tokens-file))
