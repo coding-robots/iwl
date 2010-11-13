@@ -6,7 +6,7 @@
 
 (define words-re
   (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)")) 
-           ; p{L} matches Unicode word
+; p{L} matches Unicode word
 
 (define sentences-re
   (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
@@ -16,7 +16,7 @@
 
 (define (get-words s)
   (map (lambda (x) 
-       ; note: regexp-match works like x100 faster with bytes
+         ; note: regexp-match works like x100 faster with bytes
          (string-trim-both (bytes->string/utf-8 x) #\_)) 
        (regexp-match* words-re (string->bytes/utf-8 s)))) 
 
@@ -99,7 +99,8 @@
          [words (length wl)]
          [sentences (length (get-sentences msg))]
          [syllables (sum (map syllables-count wl))])
-    (- (- 206.876 (* 1.015 (/ words sentences)))
+    (- 206.876
+       (* 1.015 (/ words sentences))
        (* 84.6 (/ syllables words)))))
 
 
@@ -127,14 +128,13 @@
             (get-tokens msg))
   ; Readabilities
   (let ([cur-rdb (readability-score msg)])
-    (hash-set! readabilities cat 
-               (/ (+ cur-rdb (hash-ref! readabilities cat cur-rdb)) 2))))
+    (hash-update! readabilities cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
 
 (define (hash-sum hash)
   (sum (hash-values hash)))
 
 (define (list-top-bottom num lst) 
-  ; return list with only num top and num bottom elements of list
+  ; return list with only num top and num bottom elements of sorted lst
   (if (> (length lst) (* 2 num))
       (let ([slst (sort lst <)])
         (append (take slst num) (take-right slst num)))
