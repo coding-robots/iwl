@@ -66,9 +66,11 @@
                          (include-template "templates/show-shared.html")))))
 
 (define (show-writer request crc)
-  (redirect-to (format "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
-                       "&tag=blogjetblog-20&index=books&linkCode=ur2&camp=1789"
-                       "&creative=9325" 
+  (redirect-to 
+   (format ((string-append "http://www.amazon.com/gp/search?ie=UTF8&keywords="
+            (string-append "~a&tag=blogjetblog-20&index=books&linkCode=ur2"
+            (string-append "&camp=1789&creative=9325")))) 
+           (hash-ref authors-hash crc))))
 
 (define (show-newsletter request)
   (list TEXT/HTML-MIME-TYPE
