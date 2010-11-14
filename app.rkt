@@ -9,10 +9,13 @@
 (require "bayes.rkt"
          "crc32.rkt")
 
+(define app-version* 8)
+(define app-date* "November 2010")
+
 (load-data!)
 
 ; Templates
-(define (base-template title body)  
+(define (base-template title menu body)
   (include-template "templates/base.html"))
 
 ; hash with crc32 mappings of author names
@@ -34,7 +37,8 @@
 (define (index req)
   (define (index-template short?)
     (list TEXT/HTML-MIME-TYPE 
-          (base-template "" (include-template "templates/index.html"))))
+          (base-template "" "analyzer"
+                         (include-template "templates/index.html"))))
   (let ([text (dict-ref (request-bindings req) 'text #f)])
     (if text
         (if (> 30 (string-length text))
@@ -74,13 +78,13 @@
 (define (show-badge req crc)
   (let ([writer (hash-ref authors-hash crc)])
     (list TEXT/HTML-MIME-TYPE 
-          (base-template writer 
+          (base-template writer ""
                          (include-template "templates/show-badge.html")))))
 
 (define (show-shared req crc)
   (let ([writer (hash-ref authors-hash crc)])
     (list TEXT/HTML-MIME-TYPE 
-          (base-template writer 
+          (base-template writer ""
                          (include-template "templates/show-shared.html")))))
 
 (define (show-writer req crc)
@@ -95,7 +99,7 @@
 
 (define (show-newsletter req)
   (list TEXT/HTML-MIME-TYPE
-        (base-template "Newsletter"
+        (base-template "Newsletter" "newsletter"
                        (include-template "templates/show-newsletter.html"))))
 
 (define (start req)
