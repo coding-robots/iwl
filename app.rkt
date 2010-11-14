@@ -4,14 +4,12 @@
          web-server/servlet-env
          web-server/templates
          srfi/43
-         racket/serialize ; temp
          net/uri-codec)
 
-(require ;"bayes.rkt" ; temp
- "crc32.rkt")
+(require "bayes.rkt"
+         "crc32.rkt")
 
-;(load-data!)
-(define categories* (deserialize (file->value "data/categories.dat"))) ; temp
+(load-data!)
 
 ; Templates
 (define (base-template title body)  
@@ -22,49 +20,64 @@
   (for/hash ([author categories*])
     (values (string-crc32-hex author) author)))
 
-;(require web-server/dispatch)
 (define interface-version 'stateless)
-;(no-web-browser)
 
 (define-values (app-dispatch req)
   (dispatch-rules
    [("") index]
    [("b" (string-arg)) show-badge]
    [("s" (string-arg)) show-shared]
+   [("w" (string-arg)) show-writer]
    [("newsletter") show-newsletter]
    [("newsletter" (string-arg)) (lambda (r a) (redirect-to "/newsletter"))]
    [else not-found]))
 
-(define (start request)
-  (app-dispatch request))
-
 (define (index request)
-  `(html (body (p "This is index"))))
+  (define (index-template short?)
+    (list TEXT/HTML-MIME-TYPE 
+          (base-template "" (include-template "templates/index.html"))))
+  (let ([text-binding (bindings-assq #"text" (request-bindings/raw request))])
+    (if text-binding
+        (let ([text (bytes->string/utf-8 (binding:form-value text-binding))])
+          (if (> 30 (string-length text))
+              (index-template #t)
+              (redirect-to 
+               (string-append "/b/" (string-crc32-hex (get-category text))))))
+        (index-template #f))))
 
 (define (not-found request)
- (make-response/full
+  (make-response/full
    404 #"Not Found"
-   (current-seconds) 
+   (current-seconds)
    TEXT/HTML-MIME-TYPE
    empty
    (list #"not found")))
 
 (define (show-badge request crc)
-  (let* ([writer (hash-ref authors-hash crc)]
-         [badge  (include-template "templates/badge.html")]
-         [body   (include-template "templates/show-badge.html")])
-    (list TEXT/HTML-MIME-TYPE (base-template writer body))))
+  (let ([writer (hash-ref authors-hash crc)])
+    (list TEXT/HTML-MIME-TYPE 
+          (base-template writer 
+                         (include-template "templates/show-badge.html")))))
 
 (define (show-shared request crc)
-  (let* ([writer (hash-ref authors-hash crc)]
-         [badge  (include-template "templates/badge.html")]
-         [body   (include-template "templates/show-shared.html")])
-    (list TEXT/HTML-MIME-TYPE (base-template writer body))))
+  (let ([writer (hash-ref authors-hash crc)])
+    (list TEXT/HTML-MIME-TYPE 
+          (base-template writer 
+                         (include-template "templates/show-shared.html")))))
+
+(define (show-writer request crc)
+  (redirect-to (format "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
+                       "&tag=blogjetblog-20&index=books&linkCode=ur2&camp=1789"
+                       "&creative=9325" 
 
 (define (show-newsletter request)
   (list TEXT/HTML-MIME-TYPE
-        (base-template "Newsletter" 
+        (base-template "Newsletter"
                        (include-template "templates/show-newsletter.html"))))
+
+
+(define (start request)
+  (app-dispatch request))
 
 (serve/servlet start
                #:servlet-path "" ; default URL

@@ -1,11 +1,9 @@
-{% extends "_base.html" %}
-{% block content %}
 <div class="content">
 <p><b>Check <em style="background:#FFFFE0">which famous writer you write like</em> with this statistical analysis tool, which analyzes your word choice and writing style and compares them with those of the famous writers.</b> 
 <p>Any text in English will do: your latest blog post, journal entry, comment, chapter of your unfinished book, etc. 
-{% if short %}<span style="background:red; color:white">{% end %}
+@when{@short? <span style="background:red; color:white">}
 For reliable results paste at least a few paragraphs (not tweets).
-{% if short %}</span>{% end %}
+@when{@short? </span>}
 <p>Paste your text here:
 <form name="index" method="post"> 
 <textarea name="text"></textarea><br> 
@@ -13,4 +11,3 @@ For reliable results paste at least a few paragraphs (not tweets).
 
 <p>The program doesn't store or use your input for any other purposes.
 </div>
-{% end %}

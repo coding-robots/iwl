@@ -30,39 +30,25 @@
 
 	<h2>Your Badge</h2>
 
-@badge	
+    @include-template{badge.html}
 
-{% if is_mac %}
-		<div style="width:500px"><p style="margin-left:200px">~<p><b>Got a Mac?</b> 
-			Get yourself an easy-to-use <b>application for keeping journals and diaries</b>, 
-			<a href="http://www.codingrobots.com/memoires/">Mémoires</a>, written by the 
-			creators of <em>I Write Like</em>! Saving your memories and returning to them has 
-			never been so enjoyable before.
-		  <p><a href="http://www.codingrobots.com/memoires/">
-			<b>Learn more and download Mémoires for free!</b>
-			</a><p style="margin-left:200px">~
-		</div>
-{% else %}
-		<div style="width:500px"><p style="margin-left:150px">
-			~ <span style="color:#aaa">Advertisement</span> ~<p>
-			<b>Great job!</b> Do you want to get your book 
-			<a href="https://www.e-junkie.com/ecom/gb.php?cl=56734&c=ib&aff=126813">published</a>?
-		  <p style="font-size:12px">"I have personally read through thousands of book proposals 
-			in my career as a publisher and agent. I know what these professionals are looking 
-			for—and what they are not looking for."<br><em>— Michael Hyatt, Chairman and CEO of 
-			Thomas Nelson Publishers.</em>
-		  <p><a href="https://www.e-junkie.com/ecom/gb.php?cl=56734&c=ib&aff=126813">
-			<b>Learn how to secure a book publishing contract!</b></a><p style="margin-left:200px">~
-		</div>
-{% end %}
+    <div style="width:500px"><p style="margin-left:200px">~<p><b>Got a Mac?</b> 
+        Get yourself an easy-to-use <b>application for keeping journals and diaries</b>, 
+        <a href="http://www.codingrobots.com/memoires/">Mémoires</a>, written by the 
+        creators of <em>I Write Like</em>! Saving your memories and returning to them has 
+        never been so enjoyable before.
+      <p><a href="http://www.codingrobots.com/memoires/">
+        <b>Learn more and download Mémoires for free!</b>
+        </a><p style="margin-left:200px">~
+    </div>
 
 <h2>Code for your blog:</h2>
 
-<textarea style="width:400px;height:175px;font:10px monospace;color: #444" onclick="this.select()">@|badge|</textarea>
+<textarea style="width:400px;height:175px;font:10px monospace;color: #444" onclick="this.select()">@include-template{badge.html}</textarea>
 
 	<h2>Link for Twitter, Facebook, etc:</h2>
 
-	<p>I write like @|writer|. Proof: <a href="http://iwl.me/s/@crc">http://iwl.me/s/@writer"</a></p>
+	<p>I write like @|writer|. Proof: <a href="http://iwl.me/s/@crc">http://iwl.me/s/@crc"</a></p>
 	<button onclick="window.open('http://twitter.com/?status='+encodeURIComponent('I write like @|writer|. Proof: http://iwl.me/s/@crc'))">Post to <b style="color: #009ACD">Twitter</b></button>
 	<button onclick="window.open('http://www.facebook.com/sharer.php?u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#104E8B">Facebook</b></button>
 
