@@ -1,0 +1,85 @@
+@include-template{newsletter.html}
+
+<tr valign="top">
+<td align="right"><label for="name"><strong>Your name:</strong></label></td>
+<td><input type="text" name="cm-name" id="name" size="20" /></td>
+</tr>
+<tr valign="top">
+<td align="right"><label for="uijyjl-uijyjl"><strong>Email address:</strong></label></td>
+<td><input type="text" name="cm-uijyjl-uijyjl" id="uijyjl-uijyjl" size="20" /></td>
+</tr>
+<tr valign="top">
+<td></td>
+<td><input type="submit" value="Subscribe" /></td>
+</tr>
+</table>
+</form>
+<table>
+<tr>
+<td><img src="http://c0043312.cdn.cloudfiles.rackspacecloud.com/iwl/ebook.png" width="110" height="147" alt="Free ebook"></td>
+<td style="padding-left:5px;"><p style="margin-top:0;font-size:13px;color:#FF4500"><b>Subscribe now to download a free classical ebook on writing:</b>
+	<p><b>Short Story Writing:</b> <span style="color:#777">A Practical Treatise on the Art of the Short Story</span> <em>By Charles Raymond Barrett, Ph. B.</em></td>
+</tr>
+</table>
+<p style="font-size: 12px; color: #999; line-height: 1.1"><em>We respect your privacy: email addresses are never sold, and you can unsubscribe at any time.</em></p> 
+</div>
+
+
+<div class="content">
+	<p>Below are the results of analysis of your text. <a href="/">Analyze new text?</a></p>
+
+	<h2>Your Badge</h2>
+
+@badge	
+
+{% if is_mac %}
+		<div style="width:500px"><p style="margin-left:200px">~<p><b>Got a Mac?</b> 
+			Get yourself an easy-to-use <b>application for keeping journals and diaries</b>, 
+			<a href="http://www.codingrobots.com/memoires/">Mémoires</a>, written by the 
+			creators of <em>I Write Like</em>! Saving your memories and returning to them has 
+			never been so enjoyable before.
+		  <p><a href="http://www.codingrobots.com/memoires/">
+			<b>Learn more and download Mémoires for free!</b>
+			</a><p style="margin-left:200px">~
+		</div>
+{% else %}
+		<div style="width:500px"><p style="margin-left:150px">
+			~ <span style="color:#aaa">Advertisement</span> ~<p>
+			<b>Great job!</b> Do you want to get your book 
+			<a href="https://www.e-junkie.com/ecom/gb.php?cl=56734&c=ib&aff=126813">published</a>?
+		  <p style="font-size:12px">"I have personally read through thousands of book proposals 
+			in my career as a publisher and agent. I know what these professionals are looking 
+			for—and what they are not looking for."<br><em>— Michael Hyatt, Chairman and CEO of 
+			Thomas Nelson Publishers.</em>
+		  <p><a href="https://www.e-junkie.com/ecom/gb.php?cl=56734&c=ib&aff=126813">
+			<b>Learn how to secure a book publishing contract!</b></a><p style="margin-left:200px">~
+		</div>
+{% end %}
+
+<h2>Code for your blog:</h2>
+
+<textarea style="width:400px;height:175px;font:10px monospace;color: #444" onclick="this.select()">@|badge|</textarea>
+
+	<h2>Link for Twitter, Facebook, etc:</h2>
+
+	<p>I write like @|writer|. Proof: <a href="http://iwl.me/s/@crc">http://iwl.me/s/@writer"</a></p>
+	<button onclick="window.open('http://twitter.com/?status='+encodeURIComponent('I write like @|writer|. Proof: http://iwl.me/s/@crc'))">Post to <b style="color: #009ACD">Twitter</b></button>
+	<button onclick="window.open('http://www.facebook.com/sharer.php?u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#104E8B">Facebook</b></button>
+
+	<button onclick="window.open('http://www.google.com/buzz/post?url='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;title='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#0043E0">G</b><b style="color:#C83425">o</b><b style="color:#EA9831">o</b><b style="color:#0043E0">g</b><b style="color:#379028">l</b><b style="color:#C83425">e</b> <b style="color:#4460B9">Buzz</b></b></button>
+
+
+	<button onclick="window.open('http://www.tumblr.com/share?v=3&amp;u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#30475E">tumblr</b></button>
+
+	<h2>Link to share with your friends</h2>
+
+	<p><input value="http://iwl.me/s/@crc" size="46" onclick="this.select()" style="border:1px solid #ccc">
+
+	<p><a href="/"><b>Analyze another text</b></a></p>
+	<p><b style="color: #009ACD">Follow us on Twitter</b>: <a href="http://twitter.com/iwritelike">@"@"iwritelike</a>, on <a href="http://blog.iwl.me/">tumblr</a>, and on <a href="http://www.facebook.com/pages/I-Write-Like/136572043029777?v=info">Facebook</a>.</p>
+
+	<h2>@writer's Books</h2>
+
+	<iframe src="http://rcm.amazon.com/e/cm?t=blogjetblog-20&o=1&p=15&l=st1&mode=books&search=@uri-encode{@writer}&fc1=000000&lt1=&lc1=3366FF&bg1=FFFFFF&f=ifr" marginwidth="0" marginheight="0" width="468" height="240" border="0" frameborder="0" style="border:none;" scrolling="no"></iframe>
+
+</div>
