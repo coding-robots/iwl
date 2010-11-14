@@ -6,7 +6,7 @@
 
 (define words-re
   ; p{L} matches Unicode word
-  (pregexp "(?>\\$?\\d*(?:[.,]\\d+)+|\\p{L}+-\\p{L}+|\\p{L}+)")) 
+  (pregexp "(?>\\p{L}+-\\p{L}+|\\p{L}+)"))
 
 (define sentences-re
   (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
