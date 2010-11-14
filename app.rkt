@@ -20,32 +20,50 @@
   (for/hash ([author categories*])
     (values (string-crc32-hex author) author)))
 
-(define interface-version 'stateless)
-
 (define-values (app-dispatch req)
   (dispatch-rules
    [("") index]
    [("b" (string-arg)) show-badge]
    [("s" (string-arg)) show-shared]
    [("w" (string-arg)) show-writer]
-   [("newsletter") show-newsletter]
+   [("api")            api]
+   [("newsletter")     show-newsletter]
    [("newsletter" (string-arg)) (lambda (r a) (redirect-to "/newsletter"))]
    [else not-found]))
 
-(define (index request)
+(define (index req)
   (define (index-template short?)
     (list TEXT/HTML-MIME-TYPE 
           (base-template "" (include-template "templates/index.html"))))
-  (let ([text-binding (bindings-assq #"text" (request-bindings/raw request))])
-    (if text-binding
-        (let ([text (bytes->string/utf-8 (binding:form-value text-binding))])
-          (if (> 30 (string-length text))
-              (index-template #t)
-              (redirect-to 
-               (string-append "/b/" (string-crc32-hex (get-category text))))))
+  (let ([text (dict-ref (request-bindings req) 'text #f)])
+    (if text
+        (if (> 30 (string-length text))
+            (index-template #t)
+            (redirect-to 
+             (string-append "/b/" (string-crc32-hex (get-category text)))))
         (index-template #f))))
 
-(define (not-found request)
+(define (api req)
+  (let* ([bindings (request-bindings req)]
+         [text (dict-ref bindings 'text #f)]
+         [wrapper (dict-ref bindings 'function "")]
+         [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
+         [permalink (dict-ref bindings 'permalink #f)]) ; -"-
+    (if (and text client-id permalink)
+        (let*  ([writer (get-category text)]
+                [crc    (string-crc32-hex writer)])
+          (list #"text/plain; charset=utf-8"
+                (string->bytes/utf-8
+                 (format "~a{\"share_link\": \"http://iwl.me/s/~a\", 
+                             \"writer_link\": \"http://iwl.me/w/~a\",
+                             \"writer\": \"~a\", 
+                             \"id\": \"~a\", 
+                             \"badge_link\": \"http://iwl.me/b/~a\"}"
+                         wrapper crc crc writer crc crc))))
+        (list #"text/plain; charset=utf-8"
+              #"{\"error\": \"not enough arguments\"}"))))
+
+(define (not-found req)
   (make-response/full
    404 #"Not Found"
    (current-seconds)
@@ -53,33 +71,37 @@
    empty
    (list #"not found")))
 
-(define (show-badge request crc)
+(define (show-badge req crc)
   (let ([writer (hash-ref authors-hash crc)])
     (list TEXT/HTML-MIME-TYPE 
           (base-template writer 
                          (include-template "templates/show-badge.html")))))
 
-(define (show-shared request crc)
+(define (show-shared req crc)
   (let ([writer (hash-ref authors-hash crc)])
     (list TEXT/HTML-MIME-TYPE 
           (base-template writer 
                          (include-template "templates/show-shared.html")))))
 
-(define (show-writer request crc)
+(define (show-writer req crc)
   (redirect-to 
-   (format ((string-append "http://www.amazon.com/gp/search?ie=UTF8&keywords="
-            (string-append "~a&tag=blogjetblog-20&index=books&linkCode=ur2"
-            (string-append "&camp=1789&creative=9325")))) 
+   (format ((string-append 
+             "http://www.amazon.com/gp/search?ie=UTF8&keywords="
+             (string-append 
+              "~a&tag=blogjetblog-20&index=books&linkCode=ur2"
+              (string-append 
+               "&camp=1789&creative=9325")))) 
            (hash-ref authors-hash crc))))
 
-(define (show-newsletter request)
+(define (show-newsletter req)
   (list TEXT/HTML-MIME-TYPE
         (base-template "Newsletter"
                        (include-template "templates/show-newsletter.html"))))
 
+(define (start req)
+  (app-dispatch req))
 
-(define (start request)
-  (app-dispatch request))
+(define interface-version 'stateless)
 
 (serve/servlet start
                #:servlet-path "" ; default URL
