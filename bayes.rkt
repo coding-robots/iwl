@@ -4,15 +4,14 @@
          srfi/13
          racket/serialize)
 
-(define words-re
-  ; p{L} matches Unicode word
-  (pregexp "(?>\\p{L}+-\\p{L}+|\\p{L}+)"))
+(define categories*    (make-vector 0))
+(define totals*        (make-hash))
+(define tokens*        (make-hash))
+(define readabilities* (make-hash))
 
-(define sentences-re
-  (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
-
-(define syllables-re
-  (pregexp "(?i:[AEIOUÄÖÜ]+)"))
+(define words-re     (pregexp "(?>\\p{L}+-\\p{L}+|\\p{L}+)"))
+(define sentences-re (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
+(define syllables-re (pregexp "(?i:[AEIOUÄÖÜ]+)"))
 
 (define (get-words s)
   (map (lambda (x) 
@@ -103,14 +102,6 @@
     (- 206.876
        (* 1.015 (/ words sentences))
        (* 84.6 (/ syllables words)))))
-
-
-; Data stuctures
-
-(define categories*    (make-vector 0))
-(define totals*        (make-hash))
-(define tokens*        (make-hash))
-(define readabilities* (make-hash))
 
 (define (hash-inc! hash key)
   (hash-update! hash key add1 0))

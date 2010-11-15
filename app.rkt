@@ -54,8 +54,8 @@
          [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
          [permalink (dict-ref bindings 'permalink #f)]) ; -"-
     (if (and text client-id permalink)
-        (let*  ([writer (get-category text)]
-                [crc    (string-crc32-hex writer)])
+        (let* ([writer (get-category text)]
+               [crc    (string-crc32-hex writer)])
           (list #"text/plain; charset=utf-8"
                 (string->bytes/utf-8
                  (format "~a{\"share_link\": \"http://iwl.me/s/~a\", 
@@ -68,12 +68,8 @@
               #"{\"error\": \"not enough arguments\"}"))))
 
 (define (not-found req)
-  (make-response/full
-   404 #"Not Found"
-   (current-seconds)
-   TEXT/HTML-MIME-TYPE
-   empty
-   (list #"not found")))
+  (make-response/full 404 #"Not Found" (current-seconds)
+                      TEXT/HTML-MIME-TYPE empty (list #"not found")))
 
 (define (show-badge req crc)
   (let ([writer (hash-ref authors-hash crc)])
@@ -89,13 +85,10 @@
 
 (define (show-writer req crc)
   (redirect-to 
-   (format ((string-append 
-             "http://www.amazon.com/gp/search?ie=UTF8&keywords="
-             (string-append 
-              "~a&tag=blogjetblog-20&index=books&linkCode=ur2"
-              (string-append 
-               "&camp=1789&creative=9325")))) 
-           (hash-ref authors-hash crc))))
+   (format (string-append
+             "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
+             "&tag=blogjetblog-20&index=books&linkCode=ur2"
+             "&camp=1789&creative=9325") (hash-ref authors-hash crc))))
 
 (define (show-newsletter req)
   (list TEXT/HTML-MIME-TYPE
