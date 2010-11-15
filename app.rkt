@@ -44,7 +44,9 @@
         (if (> 30 (string-length text))
             (index-template #t)
             (redirect-to 
-             (string-append "/b/" (string-crc32-hex (get-category text)))))
+             (string-append "/b/" (string-crc32-hex
+                                    (get-category
+                                      (safe-substring 0 3000 text)))))
         (index-template #f))))
 
 (define (api req)
@@ -54,7 +56,7 @@
          [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
          [permalink (dict-ref bindings 'permalink #f)]) ; -"-
     (if (and text client-id permalink)
-        (let* ([writer (get-category text)]
+        (let* ([writer (get-category (safe-substring 0 3000 text))]
                [crc    (string-crc32-hex writer)])
           (list #"text/plain; charset=utf-8"
                 (string->bytes/utf-8
@@ -103,4 +105,5 @@
 (serve/servlet start
                #:servlet-path "" ; default URL
                #:port 8080
-               #:servlet-regexp #rx"")
+               #:servlet-regexp #rx""
+               #:launch-browser? #f)
