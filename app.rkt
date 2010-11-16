@@ -4,7 +4,8 @@
          web-server/servlet-env
          web-server/templates
          srfi/43
-         net/uri-codec)
+         net/uri-codec
+         racket/runtime-path)
 
 (require "bayes.rkt"
          "crc32.rkt")
@@ -34,6 +35,9 @@
    [("newsletter" (string-arg)) (lambda (r a) (redirect-to "/newsletter"))]
    [else not-found]))
 
+(define (limited-text s)
+  (safe-substring s 0 3000))
+
 (define (index req)
   (define (index-template short?)
     (list TEXT/HTML-MIME-TYPE 
@@ -45,8 +49,7 @@
             (index-template #t)
             (redirect-to 
              (string-append "/b/" (string-crc32-hex
-                                    (get-category
-                                      (safe-substring 0 3000 text)))))
+                                    (get-category (limited-text text))))))
         (index-template #f))))
 
 (define (api req)
@@ -56,7 +59,7 @@
          [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
          [permalink (dict-ref bindings 'permalink #f)]) ; -"-
     (if (and text client-id permalink)
-        (let* ([writer (get-category (safe-substring 0 3000 text))]
+        (let* ([writer (get-category (limited-text text))]
                [crc    (string-crc32-hex writer)])
           (list #"text/plain; charset=utf-8"
                 (string->bytes/utf-8
@@ -100,10 +103,12 @@
 (define (start req)
   (app-dispatch req))
 
-(define interface-version 'stateless)
+(define-runtime-path srvpath ".")
 
 (serve/servlet start
-               #:servlet-path "" ; default URL
+               #:servlet-path ""
                #:port 8080
-               #:servlet-regexp #rx""
-               #:launch-browser? #f)
+               #:servlet-regexp #rx"^((?!/static/).)*$"
+               #:extra-files-paths (list srvpath)
+               #:launch-browser? #f
+               #:stateless? #t)

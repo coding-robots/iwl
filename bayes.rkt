@@ -2,7 +2,8 @@
 
 (require srfi/1
          srfi/13
-         racket/serialize)
+         racket/serialize
+         racket/runtime-path)
 
 (define categories*    (make-vector 0))
 (define totals*        (make-hash))
@@ -82,8 +83,7 @@
   (substring s start (min end (string-length s))))
 
 (define (get-tokens msg)
-  (append (map (lambda (x) 
-                 (string-upcase (safe-substring x 0 26)))
+  (append (map (lambda (x) (string-upcase (safe-substring x 0 26)))
                (get-words msg))
           (get-special-tokens msg)))
 
@@ -187,17 +187,20 @@
 
 ; Data saving and loading
 
-(define categories-file    "categories.dat")
-(define totals-file        "totals.dat")
-(define tokens-file        "tokens.dat")
-(define readabilities-file "readabilities.dat")
-
-(define (data-path file)
-  (build-path (current-directory) "data" file))
+(define-runtime-paths
+  (categories-file
+   totals-file
+   tokens-file
+   readabilities-file)
+  (values
+   "data/categories.dat"
+   "data/totals.dat"
+   "data/tokens.dat"
+   "data/readabilities.dat"))
 
 (define (dump-data)
   (define (dump-var var file)
-    (write-to-file (serialize var) (data-path file) #:exists 'replace))
+    (write-to-file (serialize var) file #:exists 'replace))
   (dump-var categories*    categories-file)
   (dump-var totals*        totals-file)
   (dump-var tokens*        tokens-file)
@@ -205,7 +208,7 @@
 
 (define (load-data!)
   (define (load-var file)
-    (deserialize (file->value (data-path file))))
+    (deserialize (file->value file)))
   (set! categories*    (load-var categories-file))
   (set! totals*        (load-var totals-file))
   (set! tokens*        (load-var tokens-file))
