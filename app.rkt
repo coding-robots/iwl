@@ -20,7 +20,7 @@
   (include-template "templates/base.html"))
 
 ; hash with crc32 mappings of author names
-(define authors-hash
+(define authors-hash*
   (for/hash ([author categories*])
     (values (string->crc32/hex author) author)))
 
@@ -88,13 +88,13 @@
                       TEXT/HTML-MIME-TYPE null (list #"not found")))
 
 (define (show-badge req crc)
-  (let ([writer (hash-ref authors-hash crc)])
+  (let ([writer (hash-ref authors-hash* crc)])
     (list TEXT/HTML-MIME-TYPE 
           (base-template writer ""
                          (include-template "templates/show-badge.html")))))
 
 (define (show-shared req crc)
-  (let ([writer (hash-ref authors-hash crc)])
+  (let ([writer (hash-ref authors-hash* crc)])
     (list TEXT/HTML-MIME-TYPE 
           (base-template writer ""
                          (include-template "templates/show-shared.html")))))
@@ -104,7 +104,7 @@
    (format (string-append
             "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
             "&tag=blogjetblog-20&index=books&linkCode=ur2"
-            "&camp=1789&creative=9325") (hash-ref authors-hash crc))))
+            "&camp=1789&creative=9325") (hash-ref authors-hash* crc))))
 
 (define (show-newsletter req)
   (list TEXT/HTML-MIME-TYPE
