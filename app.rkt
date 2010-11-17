@@ -36,15 +36,15 @@
    [else not-found]))
 
 (define (get-author s)
-  (if (> 30 (string-length s))
-      #f
-      (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
-        (get-category (safe-substring s 0 3000)))))
+  (and (> (string-length s) 30)
+       (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
+         (get-category (safe-substring s 0 3000)))))
 
 (define (index-template short?)
   (list TEXT/HTML-MIME-TYPE
         (base-template "" "analyzer"
                        (include-template "templates/index.html"))))
+
 (define (badge-url author)
   (string-append "/b/" (string->crc32/hex author)))
 
@@ -57,7 +57,7 @@
         (index-template #f))))
 
 (define (json-out s)
-  (list #"text/plain; charset=utf-8" (string->bytes/utf-8 s)))
+  (list #"application/json; charset=utf-8" (string->bytes/utf-8 s)))
 
 (define (json-error desc)
   (json-out (format "{\"error\": \"~a\"}" desc)))
@@ -65,10 +65,10 @@
 (define (json-result wrapper author)
   (let ([crc (string->crc32/hex author)])
     (json-out (format "~a{\"share_link\": \"http://iwl.me/s/~a\",
-                             \"writer_link\": \"http://iwl.me/w/~a\",
-                             \"writer\": \"~a\",
-                             \"id\": \"~a\",
-                             \"badge_link\": \"http://iwl.me/b/~a\"}"
+                       \"writer_link\": \"http://iwl.me/w/~a\",
+                       \"writer\": \"~a\",
+                       \"id\": \"~a\",
+                       \"badge_link\": \"http://iwl.me/b/~a\"}"
                       wrapper crc crc author crc crc))))
 
 (define (api req)
