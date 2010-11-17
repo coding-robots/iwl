@@ -88,23 +88,31 @@
                       TEXT/HTML-MIME-TYPE null (list #"not found")))
 
 (define (show-badge req crc)
-  (let ([writer (hash-ref authors-hash* crc)])
-    (list TEXT/HTML-MIME-TYPE 
-          (base-template writer ""
-                         (include-template "templates/show-badge.html")))))
+  (let ([writer (hash-ref authors-hash* crc #f)])
+    (if writer
+        (list TEXT/HTML-MIME-TYPE
+              (base-template writer ""
+                             (include-template "templates/show-badge.html")))
+        (not-found req))))
 
 (define (show-shared req crc)
-  (let ([writer (hash-ref authors-hash* crc)])
-    (list TEXT/HTML-MIME-TYPE 
-          (base-template writer ""
-                         (include-template "templates/show-shared.html")))))
+  (let ([writer (hash-ref authors-hash* crc #f)])
+    (if writer
+        (list TEXT/HTML-MIME-TYPE
+              (base-template writer ""
+                             (include-template "templates/show-shared.html")))
+        (not-found req))))
 
 (define (show-writer req crc)
-  (redirect-to 
-   (format (string-append
-            "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
-            "&tag=blogjetblog-20&index=books&linkCode=ur2"
-            "&camp=1789&creative=9325") (hash-ref authors-hash* crc))))
+  (cond
+    [(hash-ref authors-hash* crc #f)
+     => (lambda (w)
+          (redirect-to
+           (format (string-append
+                    "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
+                    "&tag=blogjetblog-20&index=books&linkCode=ur2"
+                    "&camp=1789&creative=9325") w)))]
+    [else (not-found req)]))
 
 (define (show-newsletter req)
   (list TEXT/HTML-MIME-TYPE
