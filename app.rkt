@@ -41,24 +41,35 @@
       (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
         (get-category (safe-substring s 0 3000)))))
 
+(define (index-template short?)
+  (list TEXT/HTML-MIME-TYPE
+        (base-template "" "analyzer"
+                       (include-template "templates/index.html"))))
+(define (badge-url author)
+  (string-append "/b/" (string->crc32/hex author)))
+
 (define (index req)
-  (define (index-template short?)
-    (list TEXT/HTML-MIME-TYPE 
-          (base-template "" "analyzer"
-                         (include-template "templates/index.html"))))
   (let ([text (dict-ref (request-bindings req) 'text #f)])
     (if text
         (cond
-          [(get-author text)
-           => (lambda (x)
-                (redirect-to
-                 (string-append "/b/" (string->crc32/hex x))))]
+          [(get-author text) => (lambda (x) (redirect-to (badge-url x)))]
           [else (index-template #t)])
         (index-template #f))))
 
+(define (json-out s)
+  (list #"text/plain; charset=utf-8" (string->bytes/utf-8 s)))
+
 (define (json-error desc)
-  (list #"text/plain; charset=utf-8"
-        (string->bytes/utf-8 (format "{\"error\": \"~a\"}" desc))))
+  (json-out (format "{\"error\": \"~a\"}" desc)))
+
+(define (json-result wrapper author)
+  (let ([crc (string->crc32/hex author)])
+    (json-out (format "~a{\"share_link\": \"http://iwl.me/s/~a\",
+                             \"writer_link\": \"http://iwl.me/w/~a\",
+                             \"writer\": \"~a\",
+                             \"id\": \"~a\",
+                             \"badge_link\": \"http://iwl.me/b/~a\"}"
+                      wrapper crc crc author crc crc))))
 
 (define (api req)
   (let* ([bindings (request-bindings req)]
@@ -67,20 +78,10 @@
          [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
          [permalink (dict-ref bindings 'permalink #f)]) ; -"-
     (if (and text client-id permalink)
-        (let ([author (get-author text)])
-          (if author
-              (let ([crc (string->crc32/hex author)])
-                (list #"text/plain; charset=utf-8"
-                      (string->bytes/utf-8
-                       (format "~a{\"share_link\": \"http://iwl.me/s/~a\",
-                             \"writer_link\": \"http://iwl.me/w/~a\",
-                             \"writer\": \"~a\",
-                             \"id\": \"~a\",
-                             \"badge_link\": \"http://iwl.me/b/~a\"}"
-                               wrapper crc crc author crc crc))))
-              (json-error "text is too short or doesn't have words")))
+        (cond
+          ([get-author text] => (lambda (x) (json-result wrapper x)))
+          (else (json-error "text is too short or doesn't have words")))
         (json-error "not enough arguments"))))
-
 
 (define (not-found req)
   (make-response/full 404 #"Not Found" (current-seconds)
