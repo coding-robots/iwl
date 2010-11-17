@@ -15,10 +15,6 @@
 
 (load-data!)
 
-; Templates
-(define (base-template title menu body)
-  (include-template "templates/base.html"))
-
 ; Hash with crc32 mappings of author names
 (define authors-hash*
   (for/hash ([author categories*])
@@ -26,7 +22,7 @@
 
 (define-values (app-dispatch req)
   (dispatch-rules
-   [("") index]
+   [("") show-index]
    [("b" (string-arg)) show-badge]
    [("s" (string-arg)) show-shared]
    [("w" (string-arg)) show-writer]
@@ -34,6 +30,9 @@
    [("newsletter")     show-newsletter]
    [("newsletter" (string-arg)) (lambda (r a) (redirect-to "/newsletter"))]
    [else not-found]))
+
+(define (base-template title menu body)
+  (include-template "templates/base.html"))
 
 (define (get-author s)
   (and (> (string-length s) 30)
@@ -48,7 +47,7 @@
 (define (badge-url author)
   (string-append "/b/" (string->crc32/hex author)))
 
-(define (index req)
+(define (show-index req)
   (let ([text (dict-ref (request-bindings req) 'text #f)])
     (if text
         (cond
