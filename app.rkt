@@ -22,7 +22,7 @@
 ; hash with crc32 mappings of author names
 (define authors-hash
   (for/hash ([author categories*])
-    (values (string-crc32-hex author) author)))
+    (values (string->crc32/hex author) author)))
 
 (define-values (app-dispatch req)
   (dispatch-rules
@@ -48,12 +48,13 @@
                          (include-template "templates/index.html"))))
   (let ([text (dict-ref (request-bindings req) 'text #f)])
     (if text
-        (let ([author (get-author text)])
-          (if author
-              (redirect-to (string-append "/b/" (string-crc32-hex author)))
-              (index-template #t)))
+        (cond
+          [(get-author text)
+           => (lambda (x)
+                (redirect-to
+                 (string-append "/b/" (string->crc32/hex x))))]
+          [else (index-template #t)])
         (index-template #f))))
-
 
 (define (json-error desc)
   (list #"text/plain; charset=utf-8"
@@ -68,13 +69,13 @@
     (if (and text client-id permalink)
         (let ([author (get-author text)])
           (if author
-              (let ([crc (string-crc32-hex author)])
+              (let ([crc (string->crc32/hex author)])
                 (list #"text/plain; charset=utf-8"
                       (string->bytes/utf-8
-                       (format "~a{\"share_link\": \"http://iwl.me/s/~a\", 
+                       (format "~a{\"share_link\": \"http://iwl.me/s/~a\",
                              \"writer_link\": \"http://iwl.me/w/~a\",
-                             \"writer\": \"~a\", 
-                             \"id\": \"~a\", 
+                             \"writer\": \"~a\",
+                             \"id\": \"~a\",
                              \"badge_link\": \"http://iwl.me/b/~a\"}"
                                wrapper crc crc author crc crc))))
               (json-error "text is too short or doesn't have words")))
@@ -83,7 +84,7 @@
 
 (define (not-found req)
   (make-response/full 404 #"Not Found" (current-seconds)
-                      TEXT/HTML-MIME-TYPE empty (list #"not found")))
+                      TEXT/HTML-MIME-TYPE null (list #"not found")))
 
 (define (show-badge req crc)
   (let ([writer (hash-ref authors-hash crc)])

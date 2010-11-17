@@ -77,7 +77,7 @@
                                 (semicolon-count-token s)
                                 (quote-token s)
                                 (dashes-token s))))
-                empty (get-sentences msg))))
+                null (get-sentences msg))))
 
 (define (safe-substring s start end)
   (substring s start (min end (string-length s))))
@@ -165,7 +165,7 @@
                    [rating (if (> all-count 0)
                                (lim-frac (/ this-prob (+ this-prob other-prob)))
                                0.4)])
-              (hash-update! ratings cat (lambda (x) (cons rating x)) empty))))))
+              (hash-update! ratings cat (lambda (x) (cons rating x)) null))))))
      (get-tokens msg))
     ; Calculate single "rating" value from list of probabilities (including
     ; readabilities) for each category for which we generated probabilities
