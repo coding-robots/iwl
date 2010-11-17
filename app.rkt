@@ -19,7 +19,7 @@
 (define (base-template title menu body)
   (include-template "templates/base.html"))
 
-; hash with crc32 mappings of author names
+; Hash with crc32 mappings of author names
 (define authors-hash*
   (for/hash ([author categories*])
     (values (string->crc32/hex author) author)))
