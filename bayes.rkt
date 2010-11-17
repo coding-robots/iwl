@@ -183,7 +183,8 @@
                                     (hash-ref readabilities* cat 0))))))))))
 
 (define (get-category msg)
-  (vector-ref categories* (car (argmax cdr (hash->list (get-ratings msg))))))
+  (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
+    (vector-ref categories* (car (argmax cdr (hash->list (get-ratings msg)))))))
 
 ; Data saving and loading
 

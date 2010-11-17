@@ -36,8 +36,7 @@
 
 (define (get-author s)
   (and (> (string-length s) 30)
-       (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
-         (get-category (safe-substring s 0 3000)))))
+       (get-category (safe-substring s 0 3000))))
 
 (define (index-template short?)
   (list TEXT/HTML-MIME-TYPE
