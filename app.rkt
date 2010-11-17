@@ -85,8 +85,11 @@
   (make-response/full 404 #"Not Found" (current-seconds)
                       TEXT/HTML-MIME-TYPE null (list #"not found")))
 
+(define (crc->author crc)
+  (hash-ref authors-hash* crc #f))
+
 (define (show-badge req crc)
-  (let ([writer (hash-ref authors-hash* crc #f)])
+  (let ([writer (crc->author crc)])
     (if writer
         (list TEXT/HTML-MIME-TYPE
               (base-template writer ""
@@ -94,7 +97,7 @@
         (not-found req))))
 
 (define (show-shared req crc)
-  (let ([writer (hash-ref authors-hash* crc #f)])
+  (let ([writer (crc->author crc)])
     (if writer
         (list TEXT/HTML-MIME-TYPE
               (base-template writer ""
@@ -103,7 +106,7 @@
 
 (define (show-writer req crc)
   (cond
-    [(hash-ref authors-hash* crc #f)
+    [(crc->author crc)
      => (lambda (w)
           (redirect-to
            (format (string-append
