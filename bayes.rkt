@@ -214,7 +214,7 @@
   (set! tokens*        (load-var tokens-file))
   (set! readabilities* (load-var readabilities-file))
   (collect-garbage)
-  (collect-garbage))
+  (collect-garbage)) ; collects better when used two times
 
 ; File trainer
 

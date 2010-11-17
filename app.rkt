@@ -35,8 +35,11 @@
    [("newsletter" (string-arg)) (lambda (r a) (redirect-to "/newsletter"))]
    [else not-found]))
 
-(define (limited-text s)
-  (safe-substring s 0 3000))
+(define (get-author s)
+  (if (> 30 (string-length s))
+      #f
+      (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
+        (get-category (safe-substring s 0 3000)))))
 
 (define (index req)
   (define (index-template short?)
@@ -45,12 +48,16 @@
                          (include-template "templates/index.html"))))
   (let ([text (dict-ref (request-bindings req) 'text #f)])
     (if text
-        (if (> 30 (string-length text))
-            (index-template #t)
-            (redirect-to 
-             (string-append "/b/" (string-crc32-hex
-                                    (get-category (limited-text text))))))
+        (let ([author (get-author text)])
+          (if author
+              (redirect-to (string-append "/b/" (string-crc32-hex author)))
+              (index-template #t)))
         (index-template #f))))
+
+
+(define (json-error desc)
+  (list #"text/plain; charset=utf-8"
+        (string->bytes/utf-8 (format "{\"error\": \"~a\"}" desc))))
 
 (define (api req)
   (let* ([bindings (request-bindings req)]
@@ -59,18 +66,20 @@
          [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
          [permalink (dict-ref bindings 'permalink #f)]) ; -"-
     (if (and text client-id permalink)
-        (let* ([writer (get-category (limited-text text))]
-               [crc    (string-crc32-hex writer)])
-          (list #"text/plain; charset=utf-8"
-                (string->bytes/utf-8
-                 (format "~a{\"share_link\": \"http://iwl.me/s/~a\", 
+        (let ([author (get-author text)])
+          (if author
+              (let ([crc (string-crc32-hex author)])
+                (list #"text/plain; charset=utf-8"
+                      (string->bytes/utf-8
+                       (format "~a{\"share_link\": \"http://iwl.me/s/~a\", 
                              \"writer_link\": \"http://iwl.me/w/~a\",
                              \"writer\": \"~a\", 
                              \"id\": \"~a\", 
                              \"badge_link\": \"http://iwl.me/b/~a\"}"
-                         wrapper crc crc writer crc crc))))
-        (list #"text/plain; charset=utf-8"
-              #"{\"error\": \"not enough arguments\"}"))))
+                               wrapper crc crc author crc crc))))
+              (json-error "text is too short or doesn't have words")))
+        (json-error "not enough arguments"))))
+
 
 (define (not-found req)
   (make-response/full 404 #"Not Found" (current-seconds)
@@ -91,9 +100,9 @@
 (define (show-writer req crc)
   (redirect-to 
    (format (string-append
-             "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
-             "&tag=blogjetblog-20&index=books&linkCode=ur2"
-             "&camp=1789&creative=9325") (hash-ref authors-hash crc))))
+            "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
+            "&tag=blogjetblog-20&index=books&linkCode=ur2"
+            "&camp=1789&creative=9325") (hash-ref authors-hash crc))))
 
 (define (show-newsletter req)
   (list TEXT/HTML-MIME-TYPE
