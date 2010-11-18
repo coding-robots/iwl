@@ -7,7 +7,7 @@ h2 { font: 22px/1.2 'IM Fell English', Georgia, Times, serif; }
 .logo { position: absolute; left: 10px; top: 32px }
 ul.menu { background: #222; color: #fff; padding: 5px; font-family: "Helvetica Neue", Arial, sans-serif; padding-left: 110px; text-transform: uppercase; list-style: none; overflow: auto; margin: 0 }
 .menu li { float: left }
-.menu a { text-decoration: none; color: inherit; background: #222; padding: 8px; border-left: 1px solid #666;}
+.menu a { text-decoration: none; color: #fff; background: #222; padding: 8px; border-left: 1px solid #666;}
 .menu a:hover { text-decoration: none; background: #666; padding: 8px;}
 .menu a.active { background: #444;}
 .content { margin-left: 110px; width: 700px; margin-top: 30px;}
