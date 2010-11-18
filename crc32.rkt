@@ -1,21 +1,6 @@
 #lang racket
 
-;(require (planet untyped/unlib/crc))
-
-; -- Taken from unlib/crc, under LGPL
-; http://planet.racket-lang.org/display.ss?package=unlib.plt&owner=untyped
-
-(define (crc32 data)
-  (bitwise-xor
-   (for/fold ([accum #xFFFFFFFF])
-     ([byte  (in-bytes data)])
-     (for/fold ([accum (bitwise-xor accum byte)])
-       ([num (in-range 0 8)])
-       (bitwise-xor (quotient accum 2)
-                    (* #xEDB88320 (bitwise-and accum 1)))))
-   #xFFFFFFFF))
-
-; ---
+(require (planet untyped/unlib/crc))
 
 (define (string->crc32 s)
   (crc32 (string->bytes/utf-8 s)))
