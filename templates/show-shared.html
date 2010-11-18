@@ -1,29 +1,4 @@
-@include-template{newsletter.html}
-
-<tr valign="top">
-<td align="right"><label for="name"><strong>Your name:</strong></label></td>
-<td><input type="text" name="cm-name" id="name" size="20" /></td>
-</tr>
-<tr valign="top">
-<td align="right"><label for="uijyjl-uijyjl"><strong>Email address:</strong></label></td>
-<td><input type="text" name="cm-uijyjl-uijyjl" id="uijyjl-uijyjl" size="20" /></td>
-</tr>
-<tr valign="top">
-<td></td>
-<td><input type="submit" value="Subscribe" /></td>
-</tr>
-</table>
-</form>
-<table>
-<tr>
-<td><img src="http://c0043312.cdn.cloudfiles.rackspacecloud.com/iwl/ebook.png" width="110" height="147" alt="Free ebook"></td>
-<td style="padding-left:5px;"><p style="margin-top:0;font-size:13px;color:#FF4500"><b>Subscribe now to download a free classical ebook on writing:</b>
-	<p><b>Short Story Writing:</b> <span style="color:#777">A Practical Treatise on the Art of the Short Story</span> <em>By Charles Raymond Barrett, Ph. B.</em></td>
-</tr>
-</table>
-<p style="font-size: 12px; color: #999; line-height: 1.1"><em>We respect your privacy: email addresses are never sold, and you can unsubscribe at any time.</em></p> 
-</div>
-
+@include-template{newsletter-ad.html}
 
 <div class="content">
 	<p>Below are the results of analysis of my text. <a href="/">Analyze your text?</a></p>
@@ -44,33 +19,8 @@
 	<p style="font-size:16px"><a href="/" style="padding: 5px; background: #FFFFE0"><b>Learn which writer you write like and get yourself a badge like this!</b></a></p>
 
 	<hr>
+    @include-template{writer-books.html}
 
-	<h2>@writer's Books</h2>
-
-	<iframe src="http://rcm.amazon.com/e/cm?t=blogjetblog-20&o=1&p=15&l=st1&mode=books&search=@uri-encode{@writer}&fc1=000000&lt1=&lc1=3366FF&bg1=FFFFFF&f=ifr" marginwidth="0" marginheight="0" width="468" height="240" border="0" frameborder="0" style="border:none;" scrolling="no"></iframe>
-
-	<img src="http://c0043312.cdn.cloudfiles.rackspacecloud.com/iwl/iwl_logo.png" width="0" height="0">
-	<h2>Our Software</h2>
-
-	<table class="software" cellspacing=4>
-	<tr>
-	<td width="33%">
-	<h3><a href="http://www.codingrobots.com/memoires/">Mémoires</a></h3>
-	<p>The easiest way to keep a journal on your Mac. Saving your memories has never been so enjoyable before. <br><a href="http://www.codingrobots.com/memoires/">Learn more &raquo;</a>
-	</td>
-	<td  width="33%">
-	<h3><a href="http://www.codingrobots.com/cathodique/">Cathodique</a></h3>
-	<p>Standalone YouTube player for your Mac. Search and watch videos in HD, with less heat and fan noise. 
-	<br><a href="http://www.codingrobots.com/cathodique/">Learn more &raquo;</a>
-	</td>
-	<td  width="33%">
-	<h3><a href="http://www.codingrobots.com/blogjet/">BlogJet</a></h3>
-	<p>A popular Windows blog editor for your WordPress, TypePad, Blogger, Movable Type and other blogs.
-	<br><a href="http://www.codingrobots.com/blogjet/">Learn more &raquo;</a>
-	</td>
-	</tr>
-	</table>
-
-	<p><b style="color: #009ACD">Follow us on Twitter</b>: <a href="http://twitter.com/iwritelike">@"@"iwritelike</a>, on <a href="http://blog.iwl.me/">tumblr</a>, and on <a href="http://www.facebook.com/pages/I-Write-Like/136572043029777?v=info">Facebook</a>.</p>
+    @include-template{ad.html}
 
 </div>

@@ -1,62 +1,36 @@
 <!DOCTYPE html>
 <head>
-<title>I Write Like @|title|</title>
-<link rel="shortcut icon" type="image/png" href="/static/favicon.png" />
-<link href='http://fonts.googleapis.com/css?family=IM+Fell+English+SC' rel='stylesheet' type='text/css'>
-<meta name="google-site-verification"
- content="26VPeNd9tqQMfZu55LDitD0OE0yF9Oi4AwEKid4LaQU" />
-<style>
-body { margin: 0; border-top: 2px solid #222; font: 14px/1.6 Georgia, Times, serif;}
-h1 { margin-left: 110px; font: 46px/1.2 'IM Fell English SC', Georgia, Times, serif; margin-bottom: 5px; }
-h1 a { text-decoration: none; color: #000;}
-h2 { font: 22px/1.2 'IM Fell English', Georgia, Times, serif; }
-.tagline { float: right; font-style: italic; top: 0;}
-.header { margin-top: 10px; }
-.logo { float:left; margin-right: 10px; margin-left: 10px }
-.menu { background: #222; color: #fff; padding: 5px; font-family: "Helvetica Neue", Arial, sans-serif; padding-left: 110px; text-transform: uppercase; }
-.menu a { text-decoration: none; color: inherit; background: #222; padding: 8px; border-left: 1px solid #666;}
-.menu a:hover { text-decoration: none; background: #666; padding: 8px;}
-.menu a.active { background: #444;}
-.content { margin-left: 110px; width: 700px; margin-top: 30px;}
-.footer { font-size: 12px; color: #444; padding-left: 110px; border-top:3px double #ccc; margin-top: 30px; background: #fff; line-height: 1.2;}
-
-textarea { font: inherit; width: 100%; height: 300px; border: 1px solid #aaa;}
-textarea:hover { background: #f6f6f6;}
-input.btn { font: 16px "Helvetica Neue", arial, sans-serif; margin-top: 10px; background: #666; color: #fff; border: 2px solid #222; border-left-color: #aaa; border-top-color: #aaa; width: 150px; }
-input.btn:hover { background: #999;}
-input.btn:active { border-left-color: #000; border-top-color: #000; background: #555;}
-.hi { font-weight: bold;}
-.note { font-size: 11px; color: #aaa; line-height: 1.2; margin-left: 10px;}
-hr {height:1px;border:0;color:#ccc;background:#ccc}
-img {border:0;}
-table { font: inherit;}
-</style>
+  <title>I Write Like @|title|</title>
+  <link rel="shortcut icon" type="image/png" href="/static/favicon.png" />
+  <link href='http://fonts.googleapis.com/css?family=IM+Fell+English+SC' rel='stylesheet' type='text/css'>
+  <meta name="google-site-verification" content="26VPeNd9tqQMfZu55LDitD0OE0yF9Oi4AwEKid4LaQU" />
+  <style>
+    @include-template{style.css}
+  </style>
 </head>
 <body>
-<div class="header">
-<a href="/"><img src="/static/iwl.png" width="90" height="80" class="logo" alt="I Write Like"></a>
-<h1><a href="/">I Write Like</a></h1>
-<div class="menu">
-<a href="/" @when{@equal?{@|menu|analyzer}class="active"}>Analyzer</a><a href="/newsletter" @when{@equal?{@|menu|newsletter}class="active"}>Newsletter</a><a href="http://astore.amazon.com/iwritelike-20">Store</a><a href="http://blog.iwl.me">Blog</a><a href="http://twitter.com/iwritelike">Twitter</a><a href="http://www.facebook.com/pages/I-Write-Like/136572043029777">Facebook</a>
-</div>
-</div>
+ <div class="header">
+   <a href="/" class="logo"><img src="/static/iwl.png" width="90" height="80" alt="I Write Like"></a>
+   <h1><a href="/">I Write Like</a></h1>
+
+   <ul class="menu">
+      <li><a href="/" @when{@equal?{@|menu|analyzer}class="active"}>Analyzer</a>
+      <li><a href="/newsletter" @when{@equal?{@|menu|newsletter}class="active"}>Newsletter</a>
+      <li><a href="http://astore.amazon.com/iwritelike-20">Store</a><a href="http://blog.iwl.me">Blog</a>
+      <li><a href="http://twitter.com/iwritelike">Twitter</a>
+      <li><a href="http://www.facebook.com/pages/I-Write-Like/136572043029777">Facebook</a>
+   </ul>
+ </div>
+
 @body
 
 <div class="footer">
-	<p>Questions? Suggestions? Contact us: <a href="mailto:iwl@"@"codingrobots.com">iwl@"@"codingrobots.com</a>
-	<p>Handcrafted by <a href="http://www.codingrobots.com"><em>Coding Robots</em></a><br>Version @|app-version*| &#183; @|app-date*|</p>
+  <p>Questions? Suggestions? Contact us: <a href="mailto:iwl@"@"codingrobots.com">iwl@"@"codingrobots.com</a>
+  <p>Handcrafted by <a href="http://www.codingrobots.com"><em>Coding Robots</em></a>
+  <br>Version @|app-version*| &#183; @|app-date*|</p>
 </div>
 
-<script type="text/javascript"> 
+@include-template{analytics.html}
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-71330-23']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script> 
+</body>
+</html>
