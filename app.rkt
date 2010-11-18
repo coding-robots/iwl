@@ -15,7 +15,7 @@
 
 (load-data!)
 
-; Hash with crc32 mappings of author names
+; Hash with crc32 mappings to author names
 (define authors-hash*
   (for/hash ([author categories*])
     (values (string->crc32/hex author) author)))
@@ -88,21 +88,22 @@
 (define (crc->author crc)
   (hash-ref authors-hash* crc #f))
 
-(define (show-badge req crc)
+(define (badge-template req crc shared?)
   (let ([writer (crc->author crc)])
     (if writer
         (list TEXT/HTML-MIME-TYPE
-              (base-template writer ""
-                             (include-template "templates/show-badge.html")))
+              (base-template 
+               writer ""
+               (if shared?
+                   (include-template "templates/show-shared.html")
+                   (include-template "templates/show-badge.html"))))
         (not-found req))))
 
+(define (show-badge req crc)
+  (badge-template req crc #f))
+
 (define (show-shared req crc)
-  (let ([writer (crc->author crc)])
-    (if writer
-        (list TEXT/HTML-MIME-TYPE
-              (base-template writer ""
-                             (include-template "templates/show-shared.html")))
-        (not-found req))))
+  (badge-template req crc #t))
 
 (define (show-writer req crc)
   (cond
