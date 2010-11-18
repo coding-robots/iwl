@@ -12,7 +12,6 @@
   (number->hex-string (string->crc32 s)))
 
 (provide/contract
- [crc32 (-> bytes? natural-number/c)]
  [string->crc32 (-> string? natural-number/c)]
  [number->hex-string (-> number? any/c)]
  [string->crc32/hex (-> string? any/c)])
