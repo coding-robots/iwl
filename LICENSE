@@ -1,7 +1,7 @@
 License for "I Write Like" source code and data
 ===============================================
 
-1. Source code (*.rkt [except for crc32.rkt]), *.html, *.css)
+1. Source code (*.rkt, *.html, *.css)
 --------------------------------------------------------------------------------
 
 Copyright (c) 2010, Dmitry Chestnykh.  All rights reserved.
@@ -39,7 +39,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 
-4. Not a license, but a trademark notice: you cannot call your own running
-version of the program (modified or not) "I Write Like" without my permission.
+4. Not a license, but a trademark notice: you cannot call your own publicly
+running version of the program (modified or not) "I Write Like" without my
+permission.
 
 If you have any questions, please write to iwl@codingrobots.com.

@@ -10,14 +10,14 @@
 (require "bayes.rkt"
          "crc32.rkt")
 
-(define app-version* 8)
-(define app-date* "November 2010")
+(define *app-version* 8)
+(define *app-date* "November 2010")
 
 (load-data!)
 
 ; Hash with crc32 mappings to author names
-(define authors-hash*
-  (for/hash ([author categories*])
+(define *authors-hash*
+  (for/hash ([author *categories*])
     (values (string->crc32/hex author) author)))
 
 (define-values (app-dispatch req)
@@ -86,13 +86,13 @@
                       TEXT/HTML-MIME-TYPE null (list #"not found")))
 
 (define (crc->author crc)
-  (hash-ref authors-hash* crc #f))
+  (hash-ref *authors-hash* crc #f))
 
 (define (badge-template req crc shared?)
   (let ([writer (crc->author crc)])
     (if writer
         (list TEXT/HTML-MIME-TYPE
-              (base-template 
+              (base-template
                writer ""
                (if shared?
                    (include-template "templates/show-shared.html")

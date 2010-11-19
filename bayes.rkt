@@ -5,10 +5,10 @@
          racket/serialize
          racket/runtime-path)
 
-(define categories*    (make-vector 0))
-(define totals*        (make-hash))
-(define tokens*        (make-hash))
-(define readabilities* (make-hash))
+(define *categories*    (make-vector 0))
+(define *totals*        (make-hash))
+(define *tokens*        (make-hash))
+(define *readabilities* (make-hash))
 
 (define words-re     (pregexp "(?>\\p{L}+-\\p{L}+|\\p{L}+)"))
 (define sentences-re (pregexp "(?>[\\.\\?!]\\\"?(?:\\s|--)+?)"))
@@ -115,14 +115,14 @@
 (define (train! msg cat)
   ; Tokens
   (for-each (lambda (w) 
-              (let ([idx (or (vector-member cat categories*)
-                             (vector-expand! categories* cat))])
-                (hash-inc! totals* idx)
-                (hash-inc! (hash-ref! tokens* w (make-hash)) idx)))
+              (let ([idx (or (vector-member cat *categories*)
+                             (vector-expand! *categories* cat))])
+                (hash-inc! *totals* idx)
+                (hash-inc! (hash-ref! *tokens* w (make-hash)) idx)))
             (get-tokens msg))
   ; Readabilities
   (let ([cur-rdb (readability-score msg)])
-    (hash-update! readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
+    (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
 
 (define (hash-sum hash)
   (sum (hash-values hash)))
@@ -149,14 +149,14 @@
 
 (define (get-ratings msg)
   (let ([ratings    (make-hash)]
-        [all-totals (hash-sum totals*)])
+        [all-totals (hash-sum *totals*)])
     ; Generate list of probabilities per category for each token in msg
     (for-each
      (lambda (w)
-       (let* ([token-counts (hash-ref tokens* w (make-hash))]
+       (let* ([token-counts (hash-ref *tokens* w (make-hash))]
               [all-count (hash-sum token-counts)])
          (hash-for-each
-          totals*
+          *totals*
           (lambda (cat cat-total)
             (let* ([cnt (hash-ref token-counts cat 0)]
                    [this-prob (/ cnt cat-total)]
@@ -170,7 +170,7 @@
     ; Calculate single "rating" value from list of probabilities (including
     ; readabilities) for each category for which we generated probabilities
     (let ([cur-readability (readability-score msg)]
-          [max-readability (reduce max 0 (hash-values readabilities*))])
+          [max-readability (reduce max 0 (hash-values *readabilities*))])
       (for/hash ([cat (hash-keys ratings)])
         (values
          cat
@@ -180,11 +180,11 @@
                                    (readability-prob
                                     max-readability
                                     cur-readability
-                                    (hash-ref readabilities* cat 0))))))))))
+                                    (hash-ref *readabilities* cat 0))))))))))
 
 (define (get-category msg)
   (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
-    (vector-ref categories* (car (argmax cdr (hash->list (get-ratings msg)))))))
+    (vector-ref *categories* (car (argmax cdr (hash->list (get-ratings msg)))))))
 
 ; Data saving and loading
 
@@ -202,18 +202,18 @@
 (define (dump-data)
   (define (dump-var var file)
     (write-to-file (serialize var) file #:exists 'replace))
-  (dump-var categories*    categories-file)
-  (dump-var totals*        totals-file)
-  (dump-var tokens*        tokens-file)
-  (dump-var readabilities* readabilities-file))
+  (dump-var *categories*    categories-file)
+  (dump-var *totals*        totals-file)
+  (dump-var *tokens*        tokens-file)
+  (dump-var *readabilities* readabilities-file))
 
 (define (load-data!)
   (define (load-var file)
     (deserialize (file->value file)))
-  (set! categories*    (load-var categories-file))
-  (set! totals*        (load-var totals-file))
-  (set! tokens*        (load-var tokens-file))
-  (set! readabilities* (load-var readabilities-file))
+  (set! *categories*    (load-var categories-file))
+  (set! *totals*        (load-var totals-file))
+  (set! *tokens*        (load-var tokens-file))
+  (set! *readabilities* (load-var readabilities-file))
   (collect-garbage)
   (collect-garbage)) ; collects better when used two times
 
