@@ -69,7 +69,7 @@
   (and (has-dashes s) 
        "**S_HD"))
 
-(define (get-special-tokens msg)
+(define (get-special-tokens text)
   (remq* '(#f)
          (foldl (lambda (s lst)
                   (append lst
@@ -77,15 +77,15 @@
                                 (semicolon-count-token s)
                                 (quote-token s)
                                 (dashes-token s))))
-                null (get-sentences msg))))
+                null (get-sentences text))))
 
 (define (safe-substring s start end)
   (substring s start (min end (string-length s))))
 
-(define (get-tokens msg)
+(define (get-tokens text)
   (append (map (lambda (x) (string-upcase (safe-substring x 0 26)))
-               (get-words msg))
-          (get-special-tokens msg)))
+               (get-words text))
+          (get-special-tokens text)))
 
 (define (syllables-count s)
   (length (regexp-match* syllables-re s)))
@@ -93,11 +93,11 @@
 (define (sum lst)
   (foldl + 0 lst))
 
-(define (readability-score msg)
+(define (readability-score text)
   ; Flesch Reading Ease
-  (let* ([wl (get-words msg)]
+  (let* ([wl (get-words text)]
          [words (length wl)]
-         [sentences (length (get-sentences msg))]
+         [sentences (length (get-sentences text))]
          [syllables (sum (map syllables-count wl))])
     (- 206.876
        (* 1.015 (/ words sentences))
@@ -112,16 +112,16 @@
     (set! vec (vector-append vec (vector val)))
     (sub1 (vector-length vec))))
 
-(define (train! msg cat)
+(define (train! text cat)
   ; Tokens
   (for-each (lambda (w) 
               (let ([idx (or (vector-member cat *categories*)
                              (vector-expand! *categories* cat))])
                 (hash-inc! *totals* idx)
                 (hash-inc! (hash-ref! *tokens* w (make-hash)) idx)))
-            (get-tokens msg))
+            (get-tokens text))
   ; Readabilities
-  (let ([cur-rdb (readability-score msg)])
+  (let ([cur-rdb (readability-score text)])
     (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
 
 (define (hash-sum hash)
@@ -147,10 +147,10 @@
 (define (readability-prob max cat current)
   (lim-frac (/ (- max (abs (- current cat))) max)))
 
-(define (get-ratings msg)
+(define (get-ratings text)
   (let ([ratings    (make-hash)]
         [all-totals (hash-sum *totals*)])
-    ; Generate list of probabilities per category for each token in msg
+    ; Generate list of probabilities per category for each token in text
     (for-each
      (lambda (w)
        (let* ([token-counts (hash-ref *tokens* w (make-hash))]
@@ -166,10 +166,10 @@
                                (lim-frac (/ this-prob (+ this-prob other-prob)))
                                0.4)])
               (hash-update! ratings cat (lambda (x) (cons rating x)) null))))))
-     (get-tokens msg))
+     (get-tokens text))
     ; Calculate single "rating" value from list of probabilities (including
     ; readabilities) for each category for which we generated probabilities
-    (let ([cur-readability (readability-score msg)]
+    (let ([cur-readability (readability-score text)]
           [max-readability (reduce max 0 (hash-values *readabilities*))])
       (for/hash ([cat (hash-keys ratings)])
         (values
@@ -182,9 +182,10 @@
                                     cur-readability
                                     (hash-ref *readabilities* cat 0))))))))))
 
-(define (get-category msg)
+(define (get-category text)
   (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
-    (vector-ref *categories* (car (argmax cdr (hash->list (get-ratings msg)))))))
+    (vector-ref *categories*
+                (car (argmax cdr (hash->list (get-ratings text)))))))
 
 ; Data saving and loading
 
