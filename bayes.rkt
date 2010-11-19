@@ -70,7 +70,7 @@
        "**S_HD"))
 
 (define (get-special-tokens msg)
-  (remq* '(#f) 
+  (remq* '(#f)
          (foldl (lambda (s lst)
                   (append lst
                           (list (word-count-token s)
