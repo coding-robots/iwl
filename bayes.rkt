@@ -114,12 +114,12 @@
 
 (define (train! text cat)
   ; Tokens
-  (for-each (lambda (w) 
-              (let ([idx (or (vector-member cat *categories*)
-                             (vector-expand! *categories* cat))])
+  (let ([idx (or (vector-member cat *categories*)
+                 (vector-expand! *categories* cat))])
+    (for-each (lambda (w)
                 (hash-inc! *totals* idx)
                 (hash-inc! (hash-ref! *tokens* w (make-hash)) idx)))
-            (get-tokens text))
+    (get-tokens text))
   ; Readabilities
   (let ([cur-rdb (readability-score text)])
     (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
