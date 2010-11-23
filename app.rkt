@@ -8,7 +8,7 @@
          racket/runtime-path
          mzlib/defmacro)
 
-(require (planet schematics/macro/aif))
+(require (planet schematics/macro:1:2/aif))
 
 (require "bayes.rkt"
          "crc32.rkt")
