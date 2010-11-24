@@ -8,10 +8,9 @@
          racket/runtime-path
          mzlib/defmacro)
 
-(require (planet schematics/macro:1:2/aif))
-
 (require "bayes.rkt"
-         "crc32.rkt")
+         "crc32.rkt"
+         "utils.rkt")
 
 (define *app-version* 8)
 (define *app-date* "November 2010")
@@ -50,9 +49,9 @@
   (string-append "/b/" (string->crc32/hex author)))
 
 (define (show-index req)
-  (aif text (dict-ref (request-bindings req) 'text #f)
-       (aif url (get-author text)
-            (redirect-to (badge-url url))
+  (aif (dict-ref (request-bindings req) 'text #f)
+       (aif (get-author it)
+            (redirect-to (badge-url it))
             (index-template #t))
        (index-template #f)))
 
@@ -78,8 +77,8 @@
          [client-id (dict-ref bindings 'client_id #f)]  ; unused, but required
          [permalink (dict-ref bindings 'permalink #f)]) ; -"-
     (if (and text client-id permalink)
-        (aif writer (get-author text)
-             (json-result wrapper writer)
+        (aif (get-author text)
+             (json-result wrapper it)
              (json-error "text is too short or doesn't have words"))
         (json-error "not enough arguments"))))
 
@@ -104,12 +103,12 @@
   (badge-template req crc "templates/show-shared.html"))
 
 (define (show-writer req crc)
-  (aif writer (crc->author crc)
+  (aif (crc->author crc)
        (redirect-to
         (format (string-append
                  "http://www.amazon.com/gp/search?ie=UTF8&keywords=~a"
                  "&tag=blogjetblog-20&index=books&linkCode=ur2"
-                 "&camp=1789&creative=9325") writer))
+                 "&camp=1789&creative=9325") it))
        (not-found req)))
 
 (define (show-newsletter req)
