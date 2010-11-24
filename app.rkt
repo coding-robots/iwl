@@ -12,7 +12,7 @@
          "crc32.rkt"
          "utils.rkt")
 
-(define *app-version* 8)
+(define *app-version* 9)
 (define *app-date* "November 2010")
 
 (load-data!)
