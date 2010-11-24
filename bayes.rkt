@@ -68,15 +68,16 @@
        "**S_HD"))
 
 (define (get-special-tokens text)
-  (remq* '(#f)
-         (foldl (lambda (s lst)
-                  (append lst
-                          (list (word-count-token s)
-                                (comma-count-token s)
-                                (semicolon-count-token s)
-                                (quote-token s)
-                                (dashes-token s))))
-                null (get-sentences text))))
+  (foldl (lambda (s lst)
+           (append lst
+                   (remq* '(#f)
+                          (list 
+                           (word-count-token s)
+                           (comma-count-token s)
+                           (semicolon-count-token s)
+                           (quote-token s)
+                           (dashes-token s)))))
+         null (get-sentences text)))
 
 (define (safe-substring s start end)
   (substring s start (min end (string-length s))))
@@ -118,7 +119,7 @@
     (for-each (lambda (w)
                 (hash-inc! *totals* idx)
                 (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx))
-    (get-tokens text)))
+              (get-tokens text)))
   ; Readabilities
   (let ([cur-rdb (readability-score text)])
     (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
