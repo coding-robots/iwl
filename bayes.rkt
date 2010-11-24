@@ -15,9 +15,7 @@
 (define syllables-re (pregexp "(?i:[AEIOUÄÖÜ]+)"))
 
 (define (get-words s)
-  (map (lambda (x) 
-         ; note: regexp-match works like x100 faster with bytes
-         (string-trim-both (bytes->string/utf-8 x) #\_)) 
+  (map bytes->string/utf-8
        (regexp-match* words-re (string->bytes/utf-8 s)))) 
 
 (define (get-sentences s)
