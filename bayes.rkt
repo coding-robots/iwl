@@ -200,6 +200,10 @@
    "data/tokens.dat"
    "data/readabilities.dat"))
 
+; I tried fasl, but while it's faster to dump and load,
+; for some reason it uses a lot more memory after loading,
+; plus it's not so portable, so stick with serialize/deserialize
+
 (define (dump-data)
   (define (dump-var var file)
     (write-to-file (serialize var) file #:exists 'replace))
