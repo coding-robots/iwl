@@ -72,6 +72,7 @@
          (foldl (lambda (s lst)
                   (append lst
                           (list (word-count-token s)
+                                (comma-count-token s)
                                 (semicolon-count-token s)
                                 (quote-token s)
                                 (dashes-token s))))
