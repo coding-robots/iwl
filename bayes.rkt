@@ -2,7 +2,7 @@
 
 (require srfi/1
          srfi/13
-         racket/serialize
+         racket/fasl
          racket/runtime-path)
 
 (define *categories*    (make-vector 0))
@@ -118,8 +118,8 @@
                  (vector-expand! *categories* cat))])
     (for-each (lambda (w)
                 (hash-inc! *totals* idx)
-                (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx)))
-    (get-tokens text))
+                (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx))
+    (get-tokens text)))
   ; Readabilities
   (let ([cur-rdb (readability-score text)])
     (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
@@ -189,32 +189,17 @@
 
 ; Data saving and loading
 
-(define-runtime-paths
-  (categories-file
-   totals-file
-   tokens-file
-   readabilities-file)
-  (values
-   "data/categories.dat"
-   "data/totals.dat"
-   "data/tokens.dat"
-   "data/readabilities.dat"))
+(define-runtime-path data-file "data/trained.fasl")
 
 (define (dump-data)
-  (define (dump-var var file)
-    (write-to-file (serialize var) file #:exists 'replace))
-  (dump-var *categories*    categories-file)
-  (dump-var *totals*        totals-file)
-  (dump-var *tokens*        tokens-file)
-  (dump-var *readabilities* readabilities-file))
-
+  (write-to-file (s-exp->fasl (list *categories*
+                                    *totals*
+                                    *tokens*
+                                    *readabilities*))
+                              data-file #:exists 'replace))
 (define (load-data!)
-  (define (load-var file)
-    (deserialize (file->value file)))
-  (set! *categories*    (load-var categories-file))
-  (set! *totals*        (load-var totals-file))
-  (set! *tokens*        (load-var tokens-file))
-  (set! *readabilities* (load-var readabilities-file))
+  (set!-values (*categories* *totals* *tokens* *readabilities*)
+               (apply values (fasl->s-exp (file->value data-file))))
   (collect-garbage)
   (collect-garbage)) ; collects better when used two times
 
