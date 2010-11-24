@@ -118,8 +118,8 @@
                  (vector-expand! *categories* cat))])
     (for-each (lambda (w)
                 (hash-inc! *totals* idx)
-                (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx)))
-    (get-tokens text))
+                (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx))
+    (get-tokens text)))
   ; Readabilities
   (let ([cur-rdb (readability-score text)])
     (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
