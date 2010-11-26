@@ -1,7 +1,7 @@
 License for "I Write Like" source code and data
 ===============================================
 
-1. Source code (*.rkt, *.html, *.css)
+1. Source code (*.rkt [except for crc32], *.html, *.css)
 --------------------------------------------------------------------------------
 
 Copyright (c) 2010, Dmitry Chestnykh.  All rights reserved.
@@ -37,9 +37,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 3. Data corpus (located in /data/ directory) is in public domain.
 
+4. crc32.rkt is licensed under LGPL, because it uses a function copied
+   from LGPL-licensed library. You can just use planet for it instead,
+   see the source file for details.
+
 --------------------------------------------------------------------------------
 
-4. Not a license, but a trademark notice: you cannot call your own publicly
+5. Not a license, but a naming notice: you cannot call your own publicly
 running version of the program (modified or not) "I Write Like" without my
 permission.
 
