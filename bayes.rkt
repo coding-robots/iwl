@@ -119,10 +119,10 @@
     (for-each (lambda (w)
                 (hash-inc! *totals* idx)
                 (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx))
-              (get-tokens text)))
-  ; Readabilities
-  (let ([cur-rdb (readability-score text)])
-    (hash-update! *readabilities* cat (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb)))
+              (get-tokens text))
+    ; Readabilities
+    (let ([cur-rdb (readability-score text)])
+      (hash-update! *readabilities* idx (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb))))
 
 (define (hash-sum hash)
   (sum (hash-values hash)))
@@ -144,8 +144,8 @@
          [S (/ (- P Q) (+ P Q))])
     (/ (+ 1 S) 2)))
 
-(define (readability-prob max cat current)
-  (lim-frac (/ (- max (abs (- current cat))) max)))
+(define (readability-prob maxr cat current)
+  (lim-frac (/ (- maxr (abs (- current cat))) maxr)))
 
 (define (get-ratings text)
   (let ([ratings    (make-hash)]
@@ -174,13 +174,11 @@
       (for/hash ([cat (hash-keys ratings)])
         (values
          cat
-         (fold-ratings (append
-                        (list-top-bottom 10 (hash-ref ratings cat))
-                        (make-list 3 ; how much influence readability adds
-                                   (readability-prob
-                                    max-readability
-                                    cur-readability
-                                    (hash-ref *readabilities* cat 0))))))))))
+         (fold-ratings (cons
+                        (readability-prob max-readability
+                                          (hash-ref *readabilities* cat 0)
+                                          cur-readability)
+                        (list-top-bottom 10 (hash-ref ratings cat)))))))))
 
 (define (get-category text)
   (with-handlers ([exn:fail:contract:divide-by-zero? (lambda (_) #f)])
