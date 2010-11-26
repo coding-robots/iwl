@@ -198,9 +198,9 @@
    "data/tokens.dat"
    "data/readabilities.dat"))
 
-; I tried fasl, but while it's faster to dump and load,
-; for some reason it uses a lot more memory after loading,
-; plus it's not so portable, so stick with serialize/deserialize
+; I tried fasl and just plain dumping of s-exprs, but while it's
+; faster to dump and load, for some reason it uses a lot more memory
+; after loading, plus it's less portable, so stick with serialize.
 
 (define (dump-data)
   (define (dump-var var file)
