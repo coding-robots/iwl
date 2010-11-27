@@ -122,7 +122,8 @@
               (get-tokens text))
     ; Readabilities
     (let ([cur-rdb (readability-score text)])
-      (hash-update! *readabilities* idx (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb))))
+      (hash-update! *readabilities* idx
+                    (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb))))
 
 (define (hash-sum hash)
   (sum (hash-values hash)))
