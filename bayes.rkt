@@ -113,9 +113,9 @@
     (sub1 (vector-length vec))))
 
 (define (train! text cat)
-  ; Tokens
   (let ([idx (or (vector-member cat *categories*)
                  (vector-expand! *categories* cat))])
+    ; Tokens
     (for-each (lambda (w)
                 (hash-inc! *totals* idx)
                 (hash-inc! (hash-ref! *tokens* w (make-hasheqv)) idx))
