@@ -95,13 +95,11 @@
 
 (define (readability-score text)
   ; Flesch Reading Ease
-  (let* ([wl (get-words text)]
-         [words (length wl)]
-         [sentences (length (get-sentences text))]
-         [syllables (sum (map syllables-count wl))])
+  (let* ([words (get-words text)]
+         [word-count (length words)])
     (- 206.876
-       (* 1.015 (/ words sentences))
-       (* 84.6 (/ syllables words)))))
+       (* 1.015 (/ word-count (length (get-sentences text))))
+       (* 84.6 (/ (sum (map syllables-count words)) word-count)))))
 
 (define (hash-inc! hash key)
   (hash-update! hash key add1 0))
