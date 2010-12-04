@@ -1,0 +1,19 @@
+{
+  "name": "I Write Like",
+  "description": "Check which famous writer you write like",
+  "version": "1",
+  "app": {
+    "urls": [
+      "*://iwl.me/",
+      "*://blog.iwl.me/"
+    ],
+    "launch": {
+      "web_url": "http://iwl.me/"
+    }
+  },
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "permissions": [
+  ]
+}
