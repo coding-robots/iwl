@@ -90,16 +90,13 @@
 (define (syllables-count s)
   (length (regexp-match* syllables-re s)))
 
-(define (sum lst)
-  (foldl + 0 lst))
-
 (define (readability-score text)
   ; Flesch Reading Ease
   (let* ([words (get-words text)]
          [word-count (length words)])
     (- 206.876
        (* 1.015 (/ word-count (length (get-sentences text))))
-       (* 84.6 (/ (sum (map syllables-count words)) word-count)))))
+       (* 84.6 (/ (apply + (map syllables-count words)) word-count)))))
 
 (define (hash-inc! hash key)
   (hash-update! hash key add1 0))
@@ -124,7 +121,7 @@
                     (lambda (x) (/ (+ cur-rdb x) 2)) cur-rdb))))
 
 (define (hash-sum hash)
-  (sum (hash-values hash)))
+  (apply + (hash-values hash)))
 
 (define (list-top-bottom num lst) 
   ; return list with only num top and num bottom elements of sorted lst
