@@ -1,5 +1,5 @@
 (("Agatha Christie" . "agatha_christie.txt")
- ("Annie Rice" . "anne_rice.txt")
+ ("Anne Rice" . "anne_rice.txt")
  ("Arthur Clarke" . "arthur_clarke.txt")
  ("Arthur Conan Doyle" . "arthur_conan_doyle.txt")
  ("Arthur Conan Doyle" . "arthur_conan_doyle_2.txt")
