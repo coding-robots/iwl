@@ -41,9 +41,12 @@
        (get-category (safe-substring text 0 3000))))
 
 (define (index-template short?)
-  (list TEXT/HTML-MIME-TYPE
-        (base-template "" "analyzer"
-                       (include-template "templates/index.html"))))
+  (response/full
+   200 #"Okay"
+   (current-seconds) TEXT/HTML-MIME-TYPE
+   empty
+   (list (string->bytes/utf-8 (base-template "" "analyzer"
+                                             (include-template "templates/index.html"))))))
 
 (define (badge-url author)
   (string-append "/b/" (string->crc32/hex author)))
@@ -56,7 +59,11 @@
        (index-template #f)))
 
 (define (json-out s)
-  (list #"application/json; charset=utf-8" (string->bytes/utf-8 s)))
+  (response/full
+   200 #"Okay"
+   (current-seconds) #"application/json; charset=utf-8"
+   empty
+   (list (string->bytes/utf-8 s))))
 
 (define (json-error desc)
   (json-out (format "{\"error\": \"~a\"}" desc)))
@@ -83,8 +90,8 @@
         (json-error "not enough arguments"))))
 
 (define (not-found req)
-  (make-response/full 404 #"Not Found" (current-seconds)
-                      TEXT/HTML-MIME-TYPE null (list #"not found")))
+  (response/full 404 #"Not Found" (current-seconds)
+                      TEXT/HTML-MIME-TYPE empty (list #"not found")))
 
 (define (crc->author crc)
   (hash-ref *authors-hash* crc #f))
@@ -92,8 +99,12 @@
 (define-macro (badge-template req crc tpl)
   `(let ([writer (crc->author ,crc)])
      (if writer
-         (list TEXT/HTML-MIME-TYPE
-               (base-template writer "" (include-template ,tpl)))
+         (response/full
+          200 #"Okay"
+          (current-seconds) TEXT/HTML-MIME-TYPE
+          empty
+          (list (string->bytes/utf-8
+               (base-template writer "" (include-template ,tpl)))))
          (not-found ,req))))
 
 (define (show-badge req crc)
@@ -112,9 +123,13 @@
        (not-found req)))
 
 (define (show-newsletter req)
-  (list TEXT/HTML-MIME-TYPE
+  (response/full
+   200 #"Okay"
+   (current-seconds) TEXT/HTML-MIME-TYPE
+   empty
+   (list (string->bytes/utf-8
         (base-template "Newsletter" "newsletter"
-                       (include-template "templates/show-newsletter.html"))))
+                       (include-template "templates/show-newsletter.html"))))))
 
 (define (start req)
   (app-dispatch req))
