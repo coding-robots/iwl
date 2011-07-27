@@ -1,8 +1,8 @@
 I Write Like
 ============
 
-Website: <http://iwl.me>
-Wikipedia: <http://en.wikipedia.org/wiki/I_Write_Like>
+* Website: <http://iwl.me>
+* Wikipedia: <http://en.wikipedia.org/wiki/I_Write_Like>
 
 Running
 -------
