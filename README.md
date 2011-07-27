@@ -1,6 +1,9 @@
 I Write Like
 ============
 
+Website: <http://iwl.me>
+Wikipedia: <http://en.wikipedia.org/wiki/I_Write_Like>
+
 Running
 -------
 
@@ -22,3 +25,10 @@ available in `data` directory).
 First, put plain-text formatted books into `train-data` directory. Edit
 `authors.rkt` to add authors and file names (remove the ones you don't
 have). Finally, run `racket train.rkt`.
+
+History
+-------
+
+The original version was written in July 2010 in Python using web.py
+framework.  Then I rewrote it in Racket in November 2010. This is the latest
+Racket version.
