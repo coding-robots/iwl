@@ -70,12 +70,12 @@
 
 (define (json-result wrapper author)
   (let ([crc (string->crc32/hex author)])
-    (json-out (format "~a{\"share_link\": \"http://iwl.me/s/~a\",
+    (json-out (format "{\"share_link\": \"http://iwl.me/s/~a\",
                        \"writer_link\": \"http://iwl.me/w/~a\",
                        \"writer\": \"~a\",
                        \"id\": \"~a\",
                        \"badge_link\": \"http://iwl.me/b/~a\"}"
-                      wrapper crc crc author crc crc))))
+                      crc crc author crc crc))))
 
 (define (api req)
   (let* ([bindings (request-bindings req)]
