@@ -3,6 +3,7 @@
 <div style="float:right;margin-right:-5px;color:#777;cursor:pointer" onclick="document.getElementById('subscribe').style.display='none'"> &times; </div>
 <h2>Become a better writer!</h2> 
 Subscribe to our <em>awesome</em> free newsletter to learn how to become a better writer and receive monthly tips on writing.</p> 
+<!--
 <form action="http://codingrobots.createsend.com/t/r/s/uijyjl/" method="post" id="subForm">
 <table cellspacing="0" cellpadding="4" border="0">
 <tr valign="top">
@@ -18,6 +19,32 @@ Subscribe to our <em>awesome</em> free newsletter to learn how to become a bette
 <td><input type="submit" value="Subscribe" /></td>
 </tr>
 </table>
+</form>
+-->
+<form method="post" action="http://lists.codingrobots.net/?p=subscribe&id=4" name="subscribeform" id="subForm">
+  <table border=0>
+  <tr>
+    <td>
+      <div class="required"><b>Email address:</b></div>
+    </td>
+    <td class="attributeinput">
+      <input type=text name=email value="" size="20" />
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div class="required"><b>Your name:</b></div>
+    </td>
+    <td class="attributeinput">
+     <input type="text" name="attribute1"  class="attributeinput" size="20" value="" />
+    </td>
+  </tr>
+  </table>
+  <input type="hidden" name="htmlemail" value="1" />
+  <input type="hidden" name="list[5]" value="signup" />
+  <input type="hidden" name="listname[5]" value="I Write Like"/>
+  <input type="hidden" name="VerificationCodeX" value="" size="20" />
+  <input type="submit" name="subscribe" value="Subscribe" />
 </form>
 <table>
 <tr>
