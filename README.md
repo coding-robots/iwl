@@ -13,7 +13,7 @@ To launch the web server:
 
 and open `http://localhost:8080`.
 
-Make sure you have [Racket 5.1.3](http://racket-lang.org) installed.
+Make sure you have [Racket](http://racket-lang.org) installed.
 
 
 Training
