@@ -25,6 +25,7 @@
 (define-values (app-dispatch req)
   (dispatch-rules
    [("") show-index]
+   [("") #:method "post" process-submission]
    [("b" (string-arg)) show-badge]
    [("s" (string-arg)) show-shared]
    [("w" (string-arg)) show-writer]
@@ -52,6 +53,9 @@
   (string-append "/b/" (string->crc32/hex author)))
 
 (define (show-index req)
+  (index-template #f))
+
+(define (process-submission req)
   (aif (dict-ref (request-bindings req) 'text #f)
        (aif (get-author it)
             (redirect-to (badge-url it))
