@@ -140,9 +140,12 @@
 
 (define-runtime-path srvpath ".")
 
+(define (get-port-from-env)
+  (string->number (or (getenv "PORT") "8080")))
+
 (serve/servlet start
                #:servlet-path ""
-               #:port 8080
+               #:port (get-port-from-env)
                #:servlet-regexp #rx"^((?!/static/).)*$"
                #:extra-files-paths (list srvpath)
                #:launch-browser? #f
