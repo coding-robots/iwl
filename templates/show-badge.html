@@ -29,31 +29,22 @@
 
 		@include-template{writer-books.html}
 
+		<h2>Share this result!</h2>
+
+		<p>I write like @|writer|. Proof: <a href="http://iwl.me/s/@crc">http://iwl.me/s/@|crc|</a></p>
+		<button onclick="window.open('https://twitter.com/?status='+encodeURIComponent('I write like @|writer|. Proof: http://iwl.me/s/@crc'))">Post to <b style="color: #009ACD">Twitter</b></button>
+		<button onclick="window.open('https://www.facebook.com/sharer.php?u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#104E8B">Facebook</b></button>
+
+		<button onclick="window.open('https://www.tumblr.com/share?v=3&amp;u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#30475E">tumblr</b></button>
+
+		
+
     @include-template{ad.html}
 
 <h2>Code for your blog:</h2>
 
 <textarea style="width:400px;height:175px;font:10px monospace;color: #444" onclick="this.select()">@include-template{badge.html}</textarea>
 
-	<h2>Link for Twitter, Facebook, etc:</h2>
-
-	<p>I write like @|writer|. Proof: <a href="http://iwl.me/s/@crc">http://iwl.me/s/@|crc|</a></p>
-	<button onclick="window.open('https://twitter.com/?status='+encodeURIComponent('I write like @|writer|. Proof: http://iwl.me/s/@crc'))">Post to <b style="color: #009ACD">Twitter</b></button>
-	<button onclick="window.open('https://www.facebook.com/sharer.php?u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#104E8B">Facebook</b></button>
-
-	<button onclick="window.open('https://www.tumblr.com/share?v=3&amp;u='+encodeURIComponent('http://iwl.me/s/@crc')+'&amp;t='+encodeURIComponent('I write like @writer'))">Post to <b style="color:#30475E">tumblr</b></button>
-
-<!-- Place this tag where you want the +1 button to render -->
-<div class="g-plusone"></div>
-
-<!-- Place this render call where appropriate -->
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
 
 	<h2>Link to share with your friends</h2>
 
