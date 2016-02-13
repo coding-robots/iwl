@@ -29,7 +29,7 @@
    [("b" (string-arg)) show-badge]
    [("s" (string-arg)) show-shared]
    [("w" (string-arg)) show-writer]
-   [("api")            api]
+   [("api") #:method "post" api]
    [("newsletter")     show-newsletter]
    [("newsletter" (string-arg)) (lambda (r a) (redirect-to "/newsletter"))]
    [else not-found]))
