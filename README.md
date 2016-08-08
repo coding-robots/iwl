@@ -30,6 +30,7 @@ History
 -------
 
 The original version was written in July 2010 in Python using web.py
-framework.  Then I rewrote it in Racket in November 2010. This is the latest
-Racket version.
+framework.  Then I rewrote it in Racket in November 2010. And rewrote again
+in Go in 2015-2016. This is the last Racket version. The currently running
+Go version is here: https://github.com/coding-robots/goiwl
 
